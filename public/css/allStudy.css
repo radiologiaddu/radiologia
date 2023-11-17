@@ -1,0 +1,40 @@
+.card-columns {
+    -webkit-column-count: 2 !important;
+    -moz-column-count: 2 !important;
+    column-count: 2 !important;
+}
+.theme-record{
+    background: linear-gradient(-135deg, #1d23e9 0%, #1dbae9 100%);
+}
+.theme-folio{
+    background: linear-gradient(-135deg, #e9d51d 0%, #eff16e 100%);
+}
+@media (max-width: 669px) {
+    .card-columns {
+        -webkit-column-count: 1 !important;
+        -moz-column-count: 1 !important;
+        column-count: 1 !important;
+    }
+}
+@media (max-width: 767px) {
+    .tMovil{
+        display: none !important;
+    }
+    li.paginate_button.previous {
+        display: inline;
+    }
+ 
+    li.paginate_button.next {
+        display: inline;
+    }
+ 
+    li.paginate_button {
+        display: none;
+    }
+}
+@media screen and (max-width: 357px) {
+    .block-r{
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+}

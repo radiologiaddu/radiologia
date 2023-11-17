@@ -1,0 +1,141 @@
+.ext-logo-image{
+    background: #6e7bde;
+    padding: 5px; 
+    border-radius: 50%; 
+    width: 130px;
+    height: 130px;
+}
+.int-logo-image{
+    padding: 10px; 
+    border-radius: 50%; 
+    background: #f4f7fa;
+}
+.int-logo-image img{
+    width: 100px; 
+    height: 100px; 
+    object-fit: cover;
+}
+.card-header{
+    display: flex;
+}
+.text-mis-estudios{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+.btn-new{
+    background: #6e7bde;
+    color: white;
+    font-weight: bold;
+}
+.link-block{
+    display: flex;
+}
+.link-block a{
+    margin-left: auto;
+}
+.study-header{
+    padding: 5px 10px !important;
+    display: block;
+}
+.study-header h6{
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    width: 100%; 
+    white-space: nowrap;
+}
+.btn-status{
+    margin-right: 0px;
+}
+.card-status{
+    padding: 30px 20px;
+}
+.carrucel{
+    margin-top: 10px;
+    -webkit-box-shadow: 0px 0px 14px 0px rgb(0 0 0 / 37%);
+    box-shadow: 0px 0px 14px 0px rgb(0 0 0 / 37%);
+}
+@media (max-width: 991px) {
+    .viewPC{
+        display: none;
+    }
+    body{
+        background: rgb(110,123,222);
+        background: linear-gradient(142deg, rgba(110,123,222,1) 0%, rgba(110,123,222,1) 85%, rgba(45,15,79,1) 100%);    }
+    .pcoded-header {
+      background: transparent;
+      
+    }
+    .pcoded-header .mobile-menu{
+        display: none;  
+    }
+    .navbar-nav{
+        display: none !important;  
+    }
+    .navbar-collapse{
+        background: transparent !important;
+    }
+    .logo-welcome{
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    .ext-logo-image{
+        background: white;
+        padding: 5px; 
+        border-radius: 50%; 
+        margin-left: auto; 
+        margin-right: auto;
+    }
+    .int-logo-image{
+        padding: 10px; 
+        border-radius: 50%; 
+        background: #6e7bde;
+    }
+    .int-logo-image img{
+        width: 100px; 
+        height: 100px; 
+        object-fit: contain;
+    }
+    .text-welcome{
+        margin-left: auto; 
+        margin-right: auto;
+        margin-top: 24px;
+        width: 100%;
+    }
+    .text-welcome h4{
+        color:white;
+        text-align: center;
+        font-weight: bold;
+    }
+    .button-welcome{
+        margin-top: 64px;
+        width: 100%;
+    }
+    .button-welcome button{
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 14px;
+        width: 160px;
+        font-weight: bold;
+        color: #2d0f4f;
+    }
+    .logout-welcome{
+        margin-top: 64px;
+        margin-bottom: 14px;
+        width: 100%;
+        text-align: center;
+    }
+    .logout-welcome a{
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+@media (min-width: 992px) {
+    .viewCell{
+        display: none;
+    }
+}

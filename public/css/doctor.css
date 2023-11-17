@@ -1,0 +1,123 @@
+.ext-logo-image{
+    background: #6e7bde;
+    padding: 5px; 
+    border-radius: 50%; 
+    width: 130px;
+    height: 130px;
+}
+.int-logo-image{
+    padding: 10px; 
+    border-radius: 50%; 
+    background: #f4f7fa;
+}
+.int-logo-image img{
+    width: 100px; 
+    height: 100px; 
+    object-fit: cover;
+}
+.card-header{
+    display: flex;
+}
+.text-mis-estudios{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+.btn-new{
+    background: #6e7bde;
+    color: white;
+    font-weight: bold;
+}
+.link-block{
+    display: flex;
+}
+.link-block a{
+    margin-left: auto;
+}
+.study-header{
+    padding: 5px 10px !important;
+    display: block;
+}
+.study-header h6{
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    width: 100%; 
+    white-space: nowrap;
+}
+.btn-status{
+    margin-right: 0px;
+}
+.card-status{
+    padding: 30px 20px;
+}
+.carrucel{
+    margin-top: 10px;
+    -webkit-box-shadow: 0px 0px 14px 0px rgb(0 0 0 / 37%);
+    box-shadow: 0px 0px 14px 0px rgb(0 0 0 / 37%);
+}
+@media (max-width: 991px) {
+    .card-btn{
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .btn-new{
+        width: 100%;
+    }
+    .scroll-studies{
+        display: flex; 
+        overflow-x: overlay; 
+        flex-wrap: inherit;
+    }
+}
+@media (max-width: 669px)
+and (min-width: 500px) 
+{
+    .text-mis-estudios h2{
+        font-size: 36px;
+    }
+    .text-mis-estudios h4{
+        font-size: 18px;
+    }
+}
+@media (max-width: 499px) 
+and (min-width: 426px) 
+{
+    .text-mis-estudios h2{
+        font-size: 30px;
+    }
+}
+@media (max-width: 425px) 
+{
+    .ext-logo-image {
+        width: 110px;
+        height: 110px;
+    }
+    .int-logo-image img {
+        width: 80px;
+        height: 80px;
+    }
+    .text-mis-estudios h2 {
+        font-size: 24px;
+    }
+    .text-mis-estudios h4 {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 991px) {
+    .logo-doctor{
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    .pcoded-header {
+        background: #6e7bde;
+    }
+    .navbar-nav{
+        display: none !important;  
+    }
+    .odd{
+        background: white !important;
+    }
+    .odd:hover {
+        background-color: rgba(4, 169, 245, 0.05) !important;
+    }
+}
