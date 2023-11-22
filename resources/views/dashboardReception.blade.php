@@ -200,7 +200,7 @@ setlocale(LC_TIME, "spanish");
 
         Pusher.logToConsole = true;
 
-    var pusher = new Pusher('6ddf4c26ec522fa588e8', {
+    var pusher = new Pusher('40f1cc1099b2ed243080', {
         cluster: 'us2'
     });
     var channel = pusher.subscribe('my-channel');
