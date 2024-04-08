@@ -159,7 +159,7 @@
                                 },
                                 {
                                     "targets": [ 4 ],
-                                    "searchable": false
+                                    "searchable": true
                                 }
                             ],
                             language: {
