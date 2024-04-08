@@ -156,11 +156,11 @@
                                     "targets": [ 0 ],
                                     "bVisible": false,
                                     "searchable": false
-                                },
+                                }/*,
                                 {
                                     "targets": [ 4 ],
                                     "searchable": true
-                                }
+                                }*/
                             ],
                             language: {
                                 "decimal": "",
