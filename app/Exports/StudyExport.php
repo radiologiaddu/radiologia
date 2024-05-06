@@ -42,6 +42,7 @@ class StudyExport implements FromCollection, WithHeadings
     public function collection()
     {
         $arrayStudies = [];
+        $horaFin = '';
         $studies = Study::with('appointment','doctor')->where('status','Enviado')->orderBy('created_at', 'DESC')->orderBy('date', 'DESC')->get();
 
         foreach ($studies as $study){
