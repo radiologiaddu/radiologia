@@ -18,7 +18,7 @@ class CreateCuponesTable extends Migration
 
         // Creamos la nueva tabla 'cupones'
         Schema::create('cupones', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_cupon');
             $table->unsignedBigInteger('id_doctor')->nullable();
             $table->string('nombre_cupon');
             $table->string('estatus');
