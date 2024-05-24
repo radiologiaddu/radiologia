@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Events\hostEvent;
 use Twilio\Rest\Client;
 use Twilio\Exceptions;
+use App\Models\Cupon;
 
 class DoctorController extends Controller
 {
@@ -28,10 +29,15 @@ class DoctorController extends Controller
     {
         $id = auth()->user()->doctor->id;
         $doctor = Doctor::findOrFail($id);
-        $studies = Study::where('doctor_id',$doctor->id)->with('appointment')->orderBy('created_at', 'DESC')->paginate(10);
+        $studies = Study::where('doctor_id',$doctor->id)->with('appointment')->orderBy('created_at', 'DESC')->paginate(6);
         $vA = session('flagModal');
 
-        return view('mis-estudios', compact('studies','vA'));
+        // Consultar los cupones del doctor con estatus activo
+        $cupones = Cupon::where('id_doctor', $doctor->id)
+        ->where('estatus', 'Activo')
+        ->get();
+
+        return view('mis-estudios', compact('studies','vA','cupones'));
     }
 
     public function edit()
@@ -170,7 +176,12 @@ class DoctorController extends Controller
         $types = Type::orderBy('id')->get();
         $mytime = Carbon::now()->timezone("America/Mexico_City");
         $year = strftime("%Y",strtotime($mytime->toDateString()));
-        return view('newStudy',compact('types','year'));
+        // Obtener los cupones disponibles del doctor
+        $id = auth()->user()->doctor->id;
+        $cupones = Cupon::where('id_doctor', $id)
+                        ->where('estatus', 'Activo')
+                        ->get();
+        return view('newStudy', compact('types', 'year', 'cupones'));
     }
     public function store(Request $request, $id)
     {   
@@ -183,6 +194,40 @@ class DoctorController extends Controller
         $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         // Output: video-g6swmAP8X5VG4jCi.mp4
         $token = substr(str_shuffle($permitted_chars), 0, 31).$folio;
+
+        $couponCode = $request->input('coupon_code');
+    // Busca el cupón en la base de datos usando el nombre del cupón y el ID del doctor
+    $coupon = Cupon::where('nombre_cupon', $couponCode)
+        ->where('id_doctor', $doctor->id)
+        ->first();
+    $couponMessage = '';
+    //dd($doctor->id);
+    //dd($coupon->id_doctor);
+    // Verifica si se encontró un cupón válido
+    if ($coupon) {
+        // Actualiza el estatus del cupón a “Usado”
+        //dd($coupon->id_doctor);
+        Cupon::where('id_cupon', $coupon->id_cupon)
+         ->update(['estatus' => 'Usado']);
+        //dd($coupon);
+        // Genera el mensaje del cupón
+        switch ($couponCode) {
+            case 'Cupon75':
+                $couponMessage = 'El doctor hizo un descuento del 75%';
+                break;
+            case 'Cupon50':
+                $couponMessage = 'El doctor hizo un descuento del 50%';
+                break;
+            case 'Cupon25_1':
+            case 'Cupon25_2':
+            case 'Cupon25_3':
+                $couponMessage = 'El doctor hizo un descuento del 25%';
+                break;
+            default:
+                $couponMessage = 'Cupón desconocido';
+                break;
+        }
+    }
         
         $newStudy = Study::create([
             'doctor_id' => $doctor->id,
@@ -192,7 +237,7 @@ class DoctorController extends Controller
             'maternal_surname' => strtoupper($request->maternal_surname),
             'patient_email' => strtolower($request->patient_email),
             'patient_phone' => $request->patient_phone,
-            'observations' => $request->note,
+            'observations' => $request->note . ' ' . $couponMessage,
             'status' => "Creado",
             'qr' => $token,
             'total' => $request->total,

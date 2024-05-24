@@ -162,6 +162,47 @@
                                                 <div class="text-mis-estudios">
                                                     <h2>Hola, {{auth()->user()->name}}</h2>
                                                     <h4>¡Genera un nuevo estudio para tu paciente!</h4>
+                                                    <!-- Agregar este bloque en la sección donde quieras mostrar los cupones Editado para actualizar-->
+                                                    @if (count($cupones) > 0)
+                                                    <div class="card-block">
+                                                        <div class="title-block">
+                                                            <h4 style="color: #6E7BDE; animation: blink 3s infinite;">Tus Cupones</h4>
+                                                        </div>
+                                                        <div>
+                                                            @php
+                                                                $cupon25_count = 0;
+                                                            @endphp
+                                                            @foreach ($cupones as $cupon)
+                                                                @if (strpos($cupon->nombre_cupon, 'Cupon25_') !== false)
+                                                                    @if ($cupon->estatus == 'Activo')
+                                                                        @php
+                                                                            $cupon25_count++;
+                                                                        @endphp
+                                                                    @endif
+                                                                @else
+                                                                    @php
+                                                                        $descuento = '';
+                                                                        switch ($cupon->nombre_cupon) {
+                                                                            case 'Cupon75':
+                                                                                $descuento = '75% de Descuento';
+                                                                                break;
+                                                                            case 'Cupon50':
+                                                                                $descuento = '50% de Descuento';
+                                                                                break;
+                                                                            default:
+                                                                                $descuento = $cupon->nombre_cupon;
+                                                                                break;
+                                                                        }
+                                                                    @endphp
+                                                                    <div>{{ $descuento }}</div>
+                                                                @endif
+                                                            @endforeach
+                                                            @if ($cupon25_count > 0)
+                                                                <div>25% de descuento ({{ $cupon25_count }})</div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                             <div class="card-block card-btn">
@@ -174,7 +215,7 @@
                                                     <h4>ÓRDENES SOLICITADAS</h4>
                                                 </div>
                                                 <div class="link-block">
-                                                    <h6>Los 10 estudios más recientes:</h6>
+                                                    <h6>Los 6 estudios más recientes:</h6>
                                                     <a href="{{route('Todosestudios')}}">
                                                         <h6>Ver todos</h6>
                                                     </a>

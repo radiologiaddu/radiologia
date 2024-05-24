@@ -256,11 +256,49 @@
                     <div class="title-block">
                         <h6>EL TOTAL DE SUS ESTUDIOS SERÁ DE:</h6>
                     </div>
-                    <div class="p-divView"> 
-                        <h4 id="p-Cost"> MXN</h4>
+                    <div class="p-divView">
+                        <h4 id="p-Cost">MXN $0.00</h4>
+                        <h4 id="Cost-temp" style="display: none;">MXN $0.00</h4>
                         <input id="totalInput" name="total" type="hidden">
                     </div>
                 </div>
+                <!-- Agregar la pregunta para el cupón -->
+                @if (count($cupones) > 0)
+    <div class="form-group row">
+        <label for="use-coupon" class="col-sm-6 col-form-label text-right">¿Deseas utilizar un cupón?</label>
+        <div class="col-sm-6">
+            <select id="use-coupon" name="coupon_code" class="form-control">
+                <option value="no">No utilizar cupón</option>
+                @php
+                    $cupon25_count = 0;
+                @endphp
+                <!-- Iterar los cupones para mostrar las opciones -->
+                @foreach ($cupones as $cupon)
+                    @if (strpos($cupon->nombre_cupon, 'Cupon25_') !== false && $cupon->estatus == 'Activo')
+                        @php
+                            $cupon25_count++;
+                        @endphp
+                    @else
+                        @php
+                            $descuento = [
+                                'Cupon75' => 0.75,
+                                'Cupon50' => 0.5,
+                                // Agrega más descuentos si es necesario
+                            ];
+                        @endphp
+                        <option value="{{ $cupon->nombre_cupon }}" data-discount="{{ $descuento[$cupon->nombre_cupon] ?? 0 }}">
+                            {{ $descuento[$cupon->nombre_cupon] * 100 }}% de Descuento
+                        </option>
+                    @endif
+                @endforeach
+                <!-- Opción para el descuento del 25% si hay cupones activos -->
+                @if ($cupon25_count > 0)
+                    <option value="Cupon25_{{ $cupon25_count }}" data-discount="0.25">25% de descuento - {{ $cupon25_count }}</option>
+                @endif
+            </select>
+        </div>
+    </div>
+    @endif
                 <br>
                 <div>
                     <div class="text-center title-block mb-3">
@@ -498,7 +536,8 @@
                 var options = {style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2};
                 var formatter = new Intl.NumberFormat(locale, options);
                 var labelCost = formatter.format(total);
-                $( "#p-Cost" ).html( labelCost )
+                $( "#p-Cost" ).html( `MXN ${labelCost}` );
+                $( "#Cost-temp" ).html( `MXN ${labelCost}` );
                 $( "#totalInput" ).val( total )
                 if(duration == '00:00'){
                     $( "#p-Duration" ).html('')
@@ -728,6 +767,37 @@
         value=value.replace(/\n/g,"<br>");
         $("#p-note").html(value);
     });
+</script>
+
+<!-- Script para calcular el descuento-->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectCoupon = document.getElementById('use-coupon');
+    const totalInput = document.getElementById('totalInput');
+    const totalCostElement = document.getElementById('p-Cost');
+    const tempCostElement = document.getElementById('Cost-temp');
+    selectCoupon.addEventListener('change', function() {
+        const initialCost = parseFloat(tempCostElement.textContent.replace('MXN ', '').trim().replace(/[,$]/g, ''));
+        console.log('Costo inicial:', initialCost);
+        const selectedOption = selectCoupon.options[selectCoupon.selectedIndex];
+        console.log('Opción seleccionada:', selectedOption);
+        const discount = parseFloat(selectedOption.getAttribute('data-discount'));
+        console.log('Descuento:', discount);
+        if (selectedOption.value === 'no') {
+            updatePrice(initialCost, initialCost);
+        } else if (discount) {
+            const discountedCost = initialCost * (1 - discount);
+            console.log('Costo con descuento:', discountedCost);
+            updatePrice(discountedCost, discountedCost > 0 ? discountedCost : 0);
+        }
+    });
+    function updatePrice(cost, inputValue) {
+        console.log('Costo:', cost);
+        console.log('Valor de entrada:', inputValue);
+        totalCostElement.textContent = `MXN $${cost.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        totalInput.value = inputValue.toFixed(2);
+    }
+});
 </script>
 
 @endsection

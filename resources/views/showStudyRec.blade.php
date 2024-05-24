@@ -551,21 +551,20 @@ $weekMap = [
                         </form>
                     </div>
                 </div>
-                @if ($discounts->count() > 0)
+                @if ($discounts->count() > 0 && strpos($study->observations, 'El doctor hizo un descuento del') === false)
                     <div class="card-block text-center">
                         <div class="col-12 row">
                             <h3 class="col-12">
-                                Descuento
+                                Descuento -
                             </h3>
                             <div class="form-group col-md-6 mb-0 text-left">
-
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="pay0" value="0" name="discount" class="custom-control-input" checked="">
                                     <label class="custom-control-label" for="pay0">No aplicar descuento</label>
                                 </div>
                                 @foreach ($discounts as $discount)
                                     <div class="custom-control custom-radio">
-                                        <input type="radio" id="pay{{$discount->id}}" value="{{$discount->id}}" name="discount" class="custom-control-input" 
+                                        <input type="radio" id="pay{{$discount->id}}" value="{{$discount->id}}" name="discount" class="custom-control-input"
                                         @if ($study->id_discount ==  $discount->id)
                                             checked=""
                                         @endif>

@@ -237,7 +237,7 @@
                                         <select class="form-control {{ $errors->has('gender') ? ' is-invalid' : '' }}" id="gender" name="gender" required>
                                             <option value="" selected disabled>Selecciona una</option>
                                             <option value="Femenino">Femenino</option>
-                                            <option vlaue="Masculino">Masculino</option>
+                                            <option value="Masculino">Masculino</option>
                                             <option value="No binario">No binario</option>                                       
                                         </select>
                                         @if ($errors->has('gender'))

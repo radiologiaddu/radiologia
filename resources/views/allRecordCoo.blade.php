@@ -62,12 +62,14 @@ $weekMap = [
                     </div>
                     <div class="col-12" id="div-table">
                         <table id="zero-configurationo" class="display table nowrap table-striped table-hover" style="width:100%">
-                            <thead>
+                        <thead>
                                 <tr>
                                     <th class="tMovil">Folio</th>
                                     <th class="tMovil">SAE</th>
                                     <th>Paciente</th>
-                                    <th class="tMovil">Recibido hace</th>
+                                    <th class="tMovil">Fecha de Emisión</th> <!-- Antes Recibido hace-->
+                                    <th class="tMovil">Estatus</th>
+                                    <th class="tMovil">Fecha de estudio realizado</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -79,24 +81,31 @@ $weekMap = [
                                             R{{sprintf('%06d',$study->folio)}}
                                         @else
                                             D{{sprintf('%06d',$study->folio)}}
-                                        @endif    
+                                        @endif
                                     </td>
                                     <td class="tMovil">{{$study->sae}}</td>
                                     <td>{{$study->patient_name}} {{$study->paternal_surname}} {{$study->maternal_surname}}</td>
                                     <td class="tMovil">
-                                        <span class="d-none">{{$study->created_at}}</span>
+                                        <span>{{$study->created_at}}</span>
+                                        <!-- <?php /*
+                                        class="d-none" //No se muestra en pantalla
                                         @if (($study->dias() + 0) == 0)
                                             @if (($study->horas() + 0) == 0)
                                                 {{ $study->minutos() + 0 }} Minutos
-
                                             @else
                                                 {{ $study->horas() + 0 }} Horas
                                             @endif
-
                                         @else
                                             {{ $study->dias() + 0 }} Días
-
-                                        @endif    
+                                        @endif  */ ?> -->
+                                    </td>
+                                    <td class="tMovil">{{$study->status}}</td>
+                                    <td class="tMovil">
+                                        @if ($study->date)
+                                            {{ $study->date }}
+                                        @else
+                                            No Registrada
+                                        @endif
                                     </td>
                                     <td>
                                         <a href="{{route('showStudyCoo',['id' => $study->id])}}" title="VER" class="label theme-bg text-white f-12 btn-rounded"><i class="feather icon-eye mr-0"></i></a>
@@ -246,8 +255,13 @@ $weekMap = [
                         {
                             "targets": [ 4 ],
                             "searchable": false
+                        },
+                        {
+                            "targets": [ 5 ],
+                            "searchable": true
                         }
                     ],
+                    "order": [[3, "desc"]],
                     language: {
                         "decimal": "",
                         "emptyTable": "No se encontró información",

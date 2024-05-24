@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -524,6 +525,17 @@ class UserController extends Controller
             Mail::to('nach.diaz@happeningnm.com')->send(new errorMail($details));
 
             Auth::login($user);
+
+            // Crear entradas en la tabla Cupones para actualizar
+    $cupones = [
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon75', 'estatus' => 'Activo'],
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon50', 'estatus' => 'Activo'],
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon25_1', 'estatus' => 'Activo'],
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon25_2', 'estatus' => 'Activo'],
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon25_3', 'estatus' => 'Activo'],
+    ];
+    // Insertar las entradas en la tabla Cupones
+    DB::table('cupones')->insert($cupones);
     
             return redirect()->route('login');
         }else{
