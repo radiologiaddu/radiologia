@@ -10,6 +10,7 @@ class Cupon extends Model
     use HasFactory;
 
     public $timestamps = true;
+    //Seguimiento a los timestamps
 
     protected $table = 'cupones';
 
