@@ -36,7 +36,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        URL::forceScheme('https');
+        URL::forceScheme('http');
         $this->middleware('guest')->except('logout');
     }
 }

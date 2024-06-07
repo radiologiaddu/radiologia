@@ -21,6 +21,7 @@ use App\Events\hostEvent;
 use Twilio\Rest\Client;
 use Twilio\Exceptions;
 use App\Models\Cupon;
+use Illuminate\Support\Facades\Auth;
 
 class DoctorController extends Controller
 {
@@ -159,7 +160,26 @@ class DoctorController extends Controller
 
     public function profil()
     {
-        return view('perfil');
+        $user = Auth::user();
+        $doctor = $user->doctor;
+        $doctorId = $doctor->id;
+        $currentYear = Carbon::now()->year;
+        $startOfYear = Carbon::create($currentYear, 1, 1)->startOfDay();
+        $endOfYear = Carbon::create($currentYear, 12, 31)->endOfDay();
+        $studies = $doctor->studies()
+            ->whereBetween('date', [$startOfYear, $endOfYear])
+            ->orderBy('date')
+            ->get();
+        setlocale(LC_TIME, 'es_ES.UTF-8');
+        $totalSum = 0;
+        foreach ($studies as $study) {
+            $study->formatted_date = Carbon::parse($study->date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
+            $totalSum += $study->total;
+        }
+        $totalSumFormatted = number_format($totalSum, 2, ',', '.');
+        $annualReturn = $totalSum * 0.02;
+        $annualReturnFormatted = number_format($annualReturn, 2, ',', '.');
+        return view('perfil', compact('user', 'doctor', 'studies', 'doctorId', 'totalSumFormatted', 'annualReturnFormatted'));
     }
 
     public function all()

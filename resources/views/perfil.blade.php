@@ -90,10 +90,111 @@
             </div>
         </div>
     </div>
+    <?php /*
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-block row text-center">
+                <div class="col-md-12">
+                    <h2 style="font-weight: bold; font-size: 32px;">REPORTE ANUAL</h2>
+                    @if($studies->isEmpty())
+                        <p>No hay estudios disponibles.</p>
+                    @else
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Folio</th>
+                                    <th>Nombre del Paciente</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($studies as $study)
+                                    @if($study->status == 'Enviado')
+                                        <tr>
+                                            <td>
+                                                @if ($study->internal == 1)
+                                                    R{{ sprintf('%06d', $study->folio) }}
+                                                @else
+                                                    D{{ sprintf('%06d', $study->folio) }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $study->patient_name }}</td>
+                                            <td>{{ $study->formatted_date }}</td>
+                                            <td>{{ number_format($study->total, 2, ',', '.') }}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+                                    <td><strong>${{ $totalSumFormatted }}</strong></td>
+                                </tr>
+                                <tr class="annual-return">
+                                    <td colspan="3" style="text-align: right;"><strong>Rendimiento Anual:</strong></td>
+                                    <td><strong>${{ $annualReturnFormatted }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    @endif
+                    <div class="logo-container">
+                        <img src="https://res.cloudinary.com/ddu/image/upload/v1716922445/Descubriendo_Sonrisas_Logo_idrc2e.png" alt="Logo">
+                    </div>
+                    <h2>Gracias por ser parte de nuestro equipo</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    */?>
     
 @endsection
 @section('css')
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
+<style>
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 4px solid black;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 15px; /* Espacio debajo de la tabla */
+    }
+    .custom-table th, .custom-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    .custom-table th {
+        background-color: #6E7BDE;
+        color: white;
+    }
+    .custom-table tr:nth-child(even) {
+        background-color: #F9F9F9;
+    }
+    .custom-table tr:hover {
+        background-color: #ddd;
+    }
+    .custom-table tfoot td {
+        background-color: #F2F2F2;
+        font-weight: bold;
+    }
+    .annual-return td {
+        font-size: 16px; /* Aumentar 2px del tamaño de fuente predeterminado de 14px */
+        font-weight: bold; /* Negritas para la fila de Rendimiento Anual */
+    }
+    h2 {
+        margin-top: 15px;
+        font-size: 22px; /* Disminuir el tamaño del texto */
+    }
+    .logo-container {
+        text-align: center;
+        margin-top: 15px;
+    }
+    .logo-container img {
+        max-width: 20%;
+        height: auto;
+    }
+    </style>
 @endsection
 
