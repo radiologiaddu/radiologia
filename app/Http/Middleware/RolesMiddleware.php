@@ -20,7 +20,7 @@ class RolesMiddleware
      */
     public function handle($request, Closure $next,$role)
     {   
-        URL::forceScheme('http');
+        URL::forceScheme('https');
 
         if(!$request->user()->hasAnyRole($role)){
             $roles = $request->user()->getRoleNames();
