@@ -51,7 +51,7 @@ setlocale(LC_TIME, "spanish");
                                 <th class="tMovil">Folio</th>
                                 <th>Paciente</th>
                                 <th class="tMovil">Cita</th>
-                                <th class="tMovil">Estatus</th>
+                                <th class="">Estatus</th>
                                 <th class="tMovil">Recibido hace</th>
                                 <th>Ver</th>
                             </tr>
@@ -80,7 +80,7 @@ setlocale(LC_TIME, "spanish");
                                         Sin agendar cita
                                     @endif
                                 </td>
-                                <td class="tMovil">{{$study->status}}</td>
+                                <td class="">{{$study->status}}</td>
                                 <td class="tMovil">
                                     <span class="d-none">{{$study->created_at}}</span>
                                     @if (($study->dias() + 0) == 0)
