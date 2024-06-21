@@ -105,7 +105,7 @@
                                     <th>Folio</th>
                                     <th>Nombre del Paciente</th>
                                     <th>Fecha</th>
-                                    <th>Total</th>
+                                    <!--<th>Total</th>-->
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,18 +121,18 @@
                                             </td>
                                             <td>{{ $study->patient_name }}</td>
                                             <td>{{ $study->formatted_date }}</td>
-                                            <td>{{ number_format($study->total, 2, ',', '.') }}</td>
+                                            <!--<td>{{ number_format($study->total, 2, ',', '.') }}</td>-->
                                         </tr>
                                     @endif
                                 @endforeach
                             </tbody>
                             <tfoot>
-                                <tr>
+                                <!--<tr>
                                     <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
                                     <td><strong>${{ $totalSumFormatted }}</strong></td>
-                                </tr>
+                                </tr>-->
                                 <tr class="annual-return">
-                                    <td colspan="3" style="text-align: right;"><strong>Rendimiento Anual:</strong></td>
+                                    <td colspan="2" style="text-align: right;"><strong>Cash Back DDU:</strong></td>
                                     <td><strong>${{ $annualReturnFormatted }}</strong></td>
                                 </tr>
                             </tfoot>
@@ -146,7 +146,7 @@
             </div>
         </div>
     </div>
-    */?>
+    */ ?>
     
 @endsection
 @section('css')

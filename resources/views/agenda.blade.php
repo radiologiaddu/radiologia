@@ -364,10 +364,14 @@
                                                                                         </div>
                                                                                     @else
                                                                                         <div class="col-12">
+                                                                                        @if($study->doctor)
                                                                                             {{$study->doctor->alias}}
+                                                                                        @endif
                                                                                         </div>
                                                                                         <div class="col-12">
+                                                                                        @if($study->doctor)
                                                                                             {{$study->doctor->user->name}} {{$study->doctor->paternalSurname}} {{$study->doctor->maternalSurname}}
+                                                                                            @endif
                                                                                         </div>
                                                                                     @endif
                                                                                 </div>

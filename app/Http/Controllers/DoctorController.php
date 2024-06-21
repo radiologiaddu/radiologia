@@ -232,16 +232,19 @@ class DoctorController extends Controller
         //dd($coupon);
         // Genera el mensaje del cupón
         switch ($couponCode) {
-            case 'Cupon75':
+            /*case 'Cupon75':
                 $couponMessage = 'El doctor hizo un descuento del 75%';
-                break;
+                break;*/
             case 'Cupon50':
                 $couponMessage = 'El doctor hizo un descuento del 50%';
                 break;
-            case 'Cupon25_1':
-            case 'Cupon25_2':
-            case 'Cupon25_3':
+            case 'Cupon25':
                 $couponMessage = 'El doctor hizo un descuento del 25%';
+                break;
+            case 'Cupon10_1':
+            case 'Cupon10_2':
+            case 'Cupon10_3':
+                $couponMessage = 'El doctor hizo un descuento del 10%';
                 break;
             default:
                 $couponMessage = 'Cupón desconocido';

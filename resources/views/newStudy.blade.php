@@ -263,26 +263,27 @@
                     </div>
                 </div>
                 <!-- Agregar la pregunta para el cupón -->
-                @if (count($cupones) > 0 && false)
+                @if (count($cupones) > 0)
     <div class="form-group row">
         <label for="use-coupon" class="col-sm-6 col-form-label text-right">¿Deseas utilizar un cupón?</label>
         <div class="col-sm-6">
             <select id="use-coupon" name="coupon_code" class="form-control">
                 <option value="no">No utilizar cupón</option>
                 @php
-                    $cupon25_count = 0;
+                    $cupon10_count = 0;
                 @endphp
                 <!-- Iterar los cupones para mostrar las opciones -->
                 @foreach ($cupones as $cupon)
-                    @if (strpos($cupon->nombre_cupon, 'Cupon25_') !== false && $cupon->estatus == 'Activo')
+                    @if (strpos($cupon->nombre_cupon, 'Cupon10_') !== false && $cupon->estatus == 'Activo')
                         @php
-                            $cupon25_count++;
+                            $cupon10_count++;
                         @endphp
                     @else
                         @php
                             $descuento = [
                                 'Cupon75' => 0.75,
                                 'Cupon50' => 0.5,
+                                'Cupon25' => 0.25,
                                 // Agrega más descuentos si es necesario
                             ];
                         @endphp
@@ -292,8 +293,8 @@
                     @endif
                 @endforeach
                 <!-- Opción para el descuento del 25% si hay cupones activos -->
-                @if ($cupon25_count > 0)
-                    <option value="Cupon25_{{ $cupon25_count }}" data-discount="0.25">25% de descuento - {{ $cupon25_count }}</option>
+                @if ($cupon10_count > 0)
+                    <option value="Cupon10_{{ $cupon10_count }}" data-discount="0.1">10% de descuento - {{ $cupon10_count }}</option>
                 @endif
             </select>
         </div>
