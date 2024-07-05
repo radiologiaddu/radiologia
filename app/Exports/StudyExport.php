@@ -1,32 +1,25 @@
 <?php
-
 namespace App\Exports;
-
 use App\Models\Study;
 use App\Models\Record;
-use App\Models\Type;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Carbon\Carbon;
-
 class StudyExport implements FromCollection, WithHeadings
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-
     public function headings(): array
     {
         return [
             'FECHA',
-            'FOLIO',	
-            'SAE',	
+            'FOLIO',
+            'SAE',
             'PACIENTE',
             'TELEFONO',
-            'CANTIDAD',	
+            'CANTIDAD',
             'ESTUDIO',
             'SUBTOTAL',
-            'DESCUENTO',	
+            'DESCUENTO',
             'TOTAL',
             'DOCTOR',
             'RADIOLOGO',
@@ -36,84 +29,49 @@ class StudyExport implements FromCollection, WithHeadings
             'CORREO DR.',
             'TELEFONO DR.',
             'REFERIDOR',
-            'ESTATUS'																																														
+            'ESTATUS'
         ];
     }
-
-    
-
-public function collection()
-{
-    $arrayStudies = [];
-    $horaFin = '';
-    
-    // Obtener el año actual
-    $currentYear = Carbon::now()->year;
-    
-    // Filtrar los estudios por el año actual
-    $studies = Study::with('appointment', 'doctor')
-        ->where('status', 'Enviado')
-        ->whereYear('created_at', $currentYear)
-        ->orderBy('created_at', 'DESC')
-        ->orderBy('date', 'DESC')
-        ->get();
-
-    foreach ($studies as $study) {
-        $record = Record::where('study_id', $study->id)->where('action', 'El estudio ha sido terminado')->first();
-        if (is_null($study->date)) {
-            if (!is_null($record)) {
-                $fecha1 = date_create($record->created_at);
-                $date = $fecha1->format('Y-m-d H:m');
-                $horaFin = $fecha1->format('H:m');
-            }
-        } else {
-            $fecha1 = date_create($study->date);
-            $date = $fecha1->format('Y-m-d') . ' ' . $study->time;
-            if (!is_null($record)) {
-                $fechaFin = date_create($record->created_at);
-                $horaFin = $fechaFin->format('H:m');
-            }
-        }
-
-        if ($study->internal == 1)
-            $folio = "R" . sprintf('%06d', $study->folio);
-        else {
-            $folio = "D" . sprintf('%06d', $study->folio);
-        }
-
-        if ($study->doctor_id == 0) {
-            $doctor = $study->doctor_name;
-            $doctorMail = $study->doctor_email;
-            $doctorPhone = "";
-        } else {
-            if (!is_null($study->doctor)) {
-                $doctor = $study->doctor->user->name . ' ' . $study->doctor->paternalSurname . ' ' . $study->doctor->maternalSurname;
-                $doctorMail = $study->doctor->user->email;
-                $doctorPhone = $study->doctor->phone;
+    public function collection()
+    {
+        $currentYear = Carbon::now()->year;
+        $studies = Study::with(['appointment', 'doctor', 'study_type.type_question.question_answer.answer'])
+                        ->where('status', 'Enviado')
+                        ->whereYear('created_at', $currentYear)
+                        ->orderBy('created_at', 'DESC')
+                        ->orderBy('date', 'DESC')
+                        ->get();
+        $exportData = [];
+        foreach ($studies as $study) {
+            $record = $study->records()->where('action', 'El estudio ha sido terminado')->first();
+            $date = $study->date ? Carbon::createFromFormat('Y-m-d H:i:s', $study->date . ' ' . $study->time) : Carbon::createFromFormat('Y-m-d H:i:s', $record->created_at);
+            $horaFin = $record ? Carbon::createFromFormat('Y-m-d H:i:s', $record->created_at)->format('H:i') : '';
+            $folio = $study->internal == 1 ? 'R' . sprintf('%06d', $study->folio) : 'D' . sprintf('%06d', $study->folio);
+            if ($study->doctor_id == 0) {
+                $doctor = $study->doctor_name;
+                $doctorMail = $study->doctor_email;
+                $doctorPhone = '';
             } else {
-                $doctor = null;
-                $doctorMail = null;
-                $doctorPhone = null;
+                $doctor = optional($study->doctor)->user->name . ' ' . optional($study->doctor)->paternalSurname . ' ' . optional($study->doctor)->maternalSurname;
+                $doctorMail = optional($study->doctor)->user->email;
+                $doctorPhone = optional($study->doctor)->phone;
             }
-        }
-        $estudios = "";
-        foreach ($study->study_type as $study_type) {
-            foreach ($study_type->type_question as $type_question) {
-                foreach ($type_question->question_answer as $question_answer) {
-                    $answer = $question_answer->answer;
-                    $total = $answer->cost - ($answer->cost * $study->discount / 100);
-                    if (!is_null($answer->study_time)) {
-                        $objStudy = (object)[
-                            'FECHA' => $date,
+            foreach ($study->study_type as $studyType) {
+                foreach ($studyType->type_question as $typeQuestion) {
+                    foreach ($typeQuestion->question_answer as $questionAnswer) {
+                        $answer = $questionAnswer->answer;
+                        $total = $answer->cost - ($answer->cost * $study->discount / 100);
+                        $exportData[] = [
+                            'FECHA' => $date->format('Y-m-d H:i'),
                             'FOLIO' => $folio,
                             'SAE' => $study->sae,
                             'PACIENTE' => $study->patient_name . ' ' . $study->paternal_surname . ' ' . $study->maternal_surname,
                             'TELEFONO' => $study->patient_phone,
                             'CANTIDAD' => 1,
                             'ESTUDIO' => $answer->answer,
-                            'SUBTOTAL' => sprintf('$ %s', number_format($answer->cost, 2)) . " MXN.",
-                            'DESCUENTO' => $study->discount . "%",
-                            'TOTAL' => sprintf('$ %s', number_format($total, 2)) . " MXN.",
+                            'SUBTOTAL' => '$ ' . number_format($answer->cost, 2) . ' MXN.',
+                            'DESCUENTO' => $study->discount . '%',
+                            'TOTAL' => '$ ' . number_format($total, 2) . ' MXN.',
                             'DOCTOR' => $doctor,
                             'RADIOLOGO' => $study->radiologist,
                             'HORA DE INICIO' => $study->time,
@@ -122,18 +80,12 @@ public function collection()
                             'CORREO DR.' => $doctorMail,
                             'TELEFONO DR.' => $doctorPhone,
                             'REFERIDOR' => $study->referral,
-                            'ESTATUS' => $study->status
+                            'ESTATUS' => $study->status,
                         ];
-                        array_push($arrayStudies, $objStudy);
                     }
                 }
             }
         }
+        return new Collection($exportData);
     }
-    $collection = collect($arrayStudies);
-
-    return $collection->sortByDesc('FECHA');
-}
-
-
 }
