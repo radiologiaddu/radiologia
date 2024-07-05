@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Study;
+use App\Models\Record;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -41,22 +42,20 @@ class StudyExport implements FromCollection, WithHeadings
         $currentYear = Carbon::now()->year;
 
         // Consulta para obtener los estudios con sus relaciones cargadas
-        $studies = Study::with([
-                'appointment',
-                'doctor.user', // Carga el usuario del doctor si existe
-                'study_type.type_question.question_answer.answer'
-            ])
-            ->where('status', 'Enviado')
-            ->whereYear('created_at', $currentYear)
-            ->orderByDesc('created_at')
-            ->orderByDesc('date')
-            ->get();
+        $studies = Study::with(['appointment', 'doctor.user', 'study_type.type_question.question_answer.answer'])
+                        ->where('status', 'Enviado')
+                        ->whereYear('created_at', $currentYear)
+                        ->orderByDesc('created_at')
+                        ->orderByDesc('date')
+                        ->get();
 
         $exportData = [];
 
         foreach ($studies as $study) {
             // Obtener el registro relacionado si existe
-            $record = $study->records()->where('action', 'El estudio ha sido terminado')->first();
+            $record = Record::where('study_id', $study->id)
+                           ->where('action', 'El estudio ha sido terminado')
+                           ->first();
 
             // Determinar la fecha y hora de término del estudio
             if ($study->date) {
