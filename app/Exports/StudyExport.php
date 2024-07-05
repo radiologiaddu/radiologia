@@ -62,14 +62,14 @@ class StudyExport implements FromCollection, WithHeadings
                 }
             }
             if ($study->internal == 1)
-                $folio = “R”.sprintf('%06d',$study->folio);
+                $folio = "R".sprintf('%06d',$study->folio);
             else{
-                $folio = “D”.sprintf('%06d',$study->folio);
+                $folio = "D".sprintf('%06d',$study->folio);
             }
             if ($study->doctor_id == 0){
                 $doctor = $study->doctor_name;
                 $doctorMail = $study->doctor_email;
-                $doctorPhone = “”;
+                $doctorPhone = "";
             }
             else{
                 if(!is_null($study->doctor)){
@@ -82,7 +82,7 @@ class StudyExport implements FromCollection, WithHeadings
                     $doctorPhone = null;
                 }
             }
-            $estudios = “”;
+            $estudios = "";
             foreach($study->study_type as $study_type){
                 foreach($study_type->type_question as $type_question){
                     foreach($type_question->question_answer as $question_answer){
@@ -97,9 +97,9 @@ class StudyExport implements FromCollection, WithHeadings
                                 'TELEFONO' => $study->patient_phone,
                                 'CANTIDAD' => 1,
                                 'ESTUDIO'  => $answer->answer,
-                                'SUBTOTAL'  => sprintf('$ %s', number_format($answer->cost, 2)).” MXN.“,
-                                'DESCUENTO' => $study->discount.“%”,
-                                'TOTAL'  => sprintf('$ %s', number_format($total, 2)).” MXN.“,
+                                'SUBTOTAL'  => sprintf('$ %s', number_format($answer->cost, 2))." MXN.",
+                                'DESCUENTO' => $study->discount."%",
+                                'TOTAL'  => sprintf('$ %s', number_format($total, 2))." MXN.",
                                 'DOCTOR'  => $doctor,
                                 'RADIOLOGO'  => $study->radiologist,
                                 'HORA DE INICIO' => $study->time,
