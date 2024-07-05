@@ -1,10 +1,13 @@
 <?php
 namespace App\Exports;
+
 use App\Models\Study;
 use App\Models\Record;
 use App\Models\Type;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Carbon\Carbon;
+
 class StudyExport implements FromCollection, WithHeadings
 {
     /**
@@ -34,89 +37,96 @@ class StudyExport implements FromCollection, WithHeadings
             'ESTATUS'
         ];
     }
+
     public function collection()
     {
         $arrayStudies = [];
         $horaFin = '';
+
+        // Definir la fecha de inicio como el primer día del mes dos meses antes del mes actual
+        $startDate = Carbon::now()->startOfMonth()->subMonths(2);
+
+        // Filtrar estudios desde el inicio de los últimos tres meses completos
         $studies = Study::with('appointment', 'doctor')
             ->where('status', 'Enviado')
+            ->where('created_at', '>=', $startDate)
             ->orderBy('created_at', 'DESC')
             ->orderBy('date', 'DESC')
-            ->take(50)
             ->get();
 
-        foreach ($studies as $study){
-            $record = Record::where('study_id',$study->id)->where('action','El estudio ha sido terminado')->first();
-            if(is_null($study->date)){
-                if(!is_null($record)){
+        foreach ($studies as $study) {
+            $record = Record::where('study_id', $study->id)->where('action', 'El estudio ha sido terminado')->first();
+            if (is_null($study->date)) {
+                if (!is_null($record)) {
                     $fecha1 = date_create($record->created_at);
-                    $date = $fecha1->format('Y-m-d H:m');
-                    $horaFin = $fecha1->format('H:m');
+                    $date = $fecha1->format('Y-m-d H:i');
+                    $horaFin = $fecha1->format('H:i');
                 }
-            }else{
+            } else {
                 $fecha1 = date_create($study->date);
-                $date = $fecha1->format('Y-m-d').' '.$study->time;
-                if(!is_null($record)){
+                $date = $fecha1->format('Y-m-d') . ' ' . $study->time;
+                if (!is_null($record)) {
                     $fechaFin = date_create($record->created_at);
-                    $horaFin = $fechaFin->format('H:m');
+                    $horaFin = $fechaFin->format('H:i');
                 }
             }
+
             if ($study->internal == 1)
-                $folio = "R".sprintf('%06d',$study->folio);
-            else{
-                $folio = "D".sprintf('%06d',$study->folio);
+                $folio = "R" . sprintf('%06d', $study->folio);
+            else {
+                $folio = "D" . sprintf('%06d', $study->folio);
             }
-            if ($study->doctor_id == 0){
+
+            if ($study->doctor_id == 0) {
                 $doctor = $study->doctor_name;
                 $doctorMail = $study->doctor_email;
                 $doctorPhone = "";
-            }
-            else{
-                if(!is_null($study->doctor)){
-                    $doctor = $study->doctor->user->name.' '.$study->doctor->paternalSurname.' '.$study->doctor->maternalSurname;
+            } else {
+                if (!is_null($study->doctor)) {
+                    $doctor = $study->doctor->user->name . ' ' . $study->doctor->paternalSurname . ' ' . $study->doctor->maternalSurname;
                     $doctorMail = $study->doctor->user->email;
                     $doctorPhone = $study->doctor->phone;
-                }else{
+                } else {
                     $doctor = null;
                     $doctorMail = null;
                     $doctorPhone = null;
                 }
             }
             $estudios = "";
-            foreach($study->study_type as $study_type){
-                foreach($study_type->type_question as $type_question){
-                    foreach($type_question->question_answer as $question_answer){
+            foreach ($study->study_type as $study_type) {
+                foreach ($study_type->type_question as $type_question) {
+                    foreach ($type_question->question_answer as $question_answer) {
                         $answer = $question_answer->answer;
-                        $total = $answer->cost-($answer->cost*$study->discount/100);
-                        if(!is_null($answer->study_time)){
+                        $total = $answer->cost - ($answer->cost * $study->discount / 100);
+                        if (!is_null($answer->study_time)) {
                             $objStudy = (object)[
                                 'FECHA' => $date,
                                 'FOLIO' => $folio,
                                 'SAE' => $study->sae,
-                                'PACIENTE' => $study->patient_name.' '.$study->paternal_surname.' '.$study->maternal_surname,
+                                'PACIENTE' => $study->patient_name . ' ' . $study->paternal_surname . ' ' . $study->maternal_surname,
                                 'TELEFONO' => $study->patient_phone,
                                 'CANTIDAD' => 1,
-                                'ESTUDIO'  => $answer->answer,
-                                'SUBTOTAL'  => sprintf('$ %s', number_format($answer->cost, 2))." MXN.",
-                                'DESCUENTO' => $study->discount."%",
-                                'TOTAL'  => sprintf('$ %s', number_format($total, 2))." MXN.",
-                                'DOCTOR'  => $doctor,
-                                'RADIOLOGO'  => $study->radiologist,
+                                'ESTUDIO' => $answer->answer,
+                                'SUBTOTAL' => sprintf('$ %s', number_format($answer->cost, 2)) . " MXN.",
+                                'DESCUENTO' => $study->discount . "%",
+                                'TOTAL' => sprintf('$ %s', number_format($total, 2)) . " MXN.",
+                                'DOCTOR' => $doctor,
+                                'RADIOLOGO' => $study->radiologist,
                                 'HORA DE INICIO' => $study->time,
                                 'HORA DE TÉRMINO' => $horaFin,
-                                'OBSERVACIONES'  => $study->observations,
-                                'CORREO DR.' => $doctorMail ,
-                                'TELEFONO DR.'  => $doctorPhone,
-                                'REFERIDOR'  => $study->referral,
-                                'ESTATUS'  => $study->status
+                                'OBSERVACIONES' => $study->observations,
+                                'CORREO DR.' => $doctorMail,
+                                'TELEFONO DR.' => $doctorPhone,
+                                'REFERIDOR' => $study->referral,
+                                'ESTATUS' => $study->status
                             ];
-                            array_push($arrayStudies,$objStudy);
+                            array_push($arrayStudies, $objStudy);
                         }
                     }
                 }
             }
         }
         $collection = collect($arrayStudies);
-        return  $collection->sortByDesc('FECHA');
+        return $collection->sortByDesc('FECHA');
     }
 }
