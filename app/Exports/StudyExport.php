@@ -38,7 +38,13 @@ class StudyExport implements FromCollection, WithHeadings
     {
         $arrayStudies = [];
         $horaFin = '';
-        $studies = Study::with('appointment','doctor')->where('status','Enviado')->orderBy('created_at', 'DESC')->orderBy('date', 'DESC')->get();
+        $studies = Study::with('appointment', 'doctor')
+            ->where('status', 'Enviado')
+            ->orderBy('created_at', 'DESC')
+            ->orderBy('date', 'DESC')
+            ->take(50)
+            ->get();
+
         foreach ($studies as $study){
             $record = Record::where('study_id',$study->id)->where('action','El estudio ha sido terminado')->first();
             if(is_null($study->date)){
