@@ -42,7 +42,7 @@ class StudyExport implements FromCollection, WithHeadings
             ->where('status', 'Enviado')
             ->orderBy('created_at', 'DESC')
             ->orderBy('date', 'DESC')
-            ->take(400)
+            ->take(800)
             ->get();
 
         foreach ($studies as $study){
