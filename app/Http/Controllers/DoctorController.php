@@ -22,9 +22,39 @@ use Twilio\Rest\Client;
 use Twilio\Exceptions;
 use App\Models\Cupon;
 use Illuminate\Support\Facades\Auth;
+use App\Models\DoctorReport;
 
 class DoctorController extends Controller
 {
+    public function actualizarEstatusReport($userId, Request $request)
+{
+    $status = $request->status;
+
+    // Encuentra el DoctorReport por user_id y actualiza el estado
+    $doctorReport = DoctorReport::where('user_id', $userId)->first();
+
+    if ($doctorReport) {
+        $doctorReport->status = $status;
+        $doctorReport->save();
+
+        return response()->json(['status' => true, 'message' => 'Estado actualizado correctamente']);
+    }
+
+    return response()->json(['status' => false, 'message' => 'No se encontró el reporte del doctor']);
+}
+
+    public function actualizarEstatus($id)
+{
+    $doctorReport = DoctorReport::where('user_id', $id)->first();
+
+    if ($doctorReport) {
+        $doctorReport->update([
+            'status' => request('status')  // 'status' aquí será 1 o 0 según el valor enviado desde el frontend
+        ]);
+    }
+
+    return response()->json(['success' => true]);
+}
     //
     public function index()
     {
@@ -33,12 +63,29 @@ class DoctorController extends Controller
         $studies = Study::where('doctor_id',$doctor->id)->with('appointment')->orderBy('created_at', 'DESC')->paginate(6);
         $vA = session('flagModal');
 
+        // Consultar el estado de doctor_reports para el doctor activo
+        $doctorReport = DoctorReport::where('doctor_id', $doctor->id)
+        ->value('status');
+        
         // Consultar los cupones del doctor con estatus activo
         $cupones = Cupon::where('id_doctor', $doctor->id)
         ->where('estatus', 'Activo')
         ->get();
 
-        return view('mis-estudios', compact('studies','vA','cupones'));
+        // Calcular el monto total de los estudios para el año actual
+    $currentYear = Carbon::now()->year;
+    $startOfYear = Carbon::create($currentYear, 1, 1)->startOfDay();
+    $endOfYear = Carbon::create($currentYear, 12, 31)->endOfDay();
+
+    $totalSum = Study::where('doctor_id', $doctor->id)
+                     ->whereBetween('date', [$startOfYear, $endOfYear])
+                     ->sum('total');
+
+    $totalSumFormatted = number_format($totalSum, 2, ',', '.');
+    $annualReturn = $totalSum * 0.02;
+    $annualReturnFormatted = number_format($annualReturn, 2, ',', '.');
+
+        return view('mis-estudios', compact('studies','vA','cupones','doctorReport','totalSumFormatted', 'annualReturnFormatted'));
     }
 
     public function edit()
@@ -159,10 +206,51 @@ class DoctorController extends Controller
     }
 
     public function profil()
+{
+    $user = Auth::user();
+    $doctor = $user->doctor;
+    $doctorId = $doctor->id;
+    $currentYear = Carbon::now()->year;
+    $startOfYear = Carbon::create($currentYear, 1, 1)->startOfDay();
+    $endOfYear = Carbon::create($currentYear, 12, 31)->endOfDay();
+    $studies = $doctor->studies()
+        ->whereBetween('date', [$startOfYear, $endOfYear])
+        ->orderBy('date')
+        ->get();
+    
+    // Obtener el status desde DoctorReport
+    $doctorReport = DoctorReport::where('doctor_id', $doctorId)->first();
+    $status = $doctorReport ? $doctorReport->status : null;
+
+    setlocale(LC_TIME, 'es_ES.UTF-8');
+    $totalSum = 0;
+    foreach ($studies as $study) {
+        $study->formatted_date = Carbon::parse($study->date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
+        $totalSum += $study->total;
+    }
+    $totalSumFormatted = number_format($totalSum, 2, ',', '.');
+    $annualReturn = $totalSum * 0.02;
+    $annualReturnFormatted = number_format($annualReturn, 2, ',', '.');
+
+    return view('perfil', compact('user', 'doctor', 'studies', 'doctorId', 'totalSumFormatted', 'annualReturnFormatted', 'status'));
+}
+
+    
+    public function showProfile($userId)
     {
-        $user = Auth::user();
+        // Buscar al usuario por su ID
+        $user = User::find($userId);
+        if (!$user) {
+            abort(404, 'Usuario no encontrado');
+        }
+    
+        // Obtener al doctor asociado al usuario (si existe)
         $doctor = $user->doctor;
-        $doctorId = $doctor->id;
+        if (!$doctor) {
+            abort(404, 'No se encontró un doctor asociado a este usuario');
+        }
+    
+        // Obtener los estudios del doctor para el año actual
         $currentYear = Carbon::now()->year;
         $startOfYear = Carbon::create($currentYear, 1, 1)->startOfDay();
         $endOfYear = Carbon::create($currentYear, 12, 31)->endOfDay();
@@ -170,6 +258,8 @@ class DoctorController extends Controller
             ->whereBetween('date', [$startOfYear, $endOfYear])
             ->orderBy('date')
             ->get();
+    
+        // Formatear fechas y calcular totales
         setlocale(LC_TIME, 'es_ES.UTF-8');
         $totalSum = 0;
         foreach ($studies as $study) {
@@ -179,8 +269,13 @@ class DoctorController extends Controller
         $totalSumFormatted = number_format($totalSum, 2, ',', '.');
         $annualReturn = $totalSum * 0.02;
         $annualReturnFormatted = number_format($annualReturn, 2, ',', '.');
-        return view('perfil', compact('user', 'doctor', 'studies', 'doctorId', 'totalSumFormatted', 'annualReturnFormatted'));
+    
+        // Indicador para mostrar solo el cash back
+        $showCashBackOnly = request()->input('showCashBackOnly', false);
+    
+        return view('profile', compact('user', 'doctor', 'studies', 'totalSumFormatted', 'annualReturnFormatted', 'showCashBackOnly'));
     }
+    
 
     public function all()
     {

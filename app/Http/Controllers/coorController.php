@@ -545,10 +545,22 @@ class coorController extends Controller
     }
 
     public function doctores()
-    {
-        $users = User::where('status','!=',null)->Role(['Doctor'])->with('doctor')->orderBy('id')->get();
-        return view('doctorsCoor', compact('users'));
+{
+    $users = User::where('status', '!=', null)
+                 ->role('Doctor')
+                 ->with(['doctor', 'doctorReports']) // Cargar relaciones
+                 ->orderBy('id')
+                 ->get();
+
+    foreach ($users as $user) {
+        // Aquí recuperamos el estado del reporte del doctor si está disponible
+        $user->doctorReportStatus = optional($user->doctorReports)->status ? 'Activo' : 'Inactivo';
     }
+
+    return view('doctorsCoor', compact('users'));
+}
+
+
     public function createDoctorCoo()
     {
         return view('newDoctorCoo');

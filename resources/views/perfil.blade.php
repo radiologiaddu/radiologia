@@ -15,7 +15,6 @@
                                 <img src="{{ asset('assets/images/user/defaultProfile.png')}}" class="img-radius" alt="User-Profile-Image">
                             @else
                                 <img src="{{auth()->user()->doctor->photo}}" class="img-radius" alt="User-Profile-Image">
-
                             @endif
                         </div>
                     </div>
@@ -28,7 +27,6 @@
                         {{auth()->user()->doctor->paternalSurname}}
                         {{auth()->user()->doctor->maternalSurname}}
                     </h2>
-                    
                 </div>
             </div>
             <div class="card-block row text-center">
@@ -38,44 +36,31 @@
                         {{auth()->user()->email}}
                     </p>
                 </div>
-                
                 <div class="col-md-4">
                     <h4>Alias:</h4>
                     <p>
                         {{auth()->user()->doctor->alias}}
                     </p>
                 </div>
-                <!--
                 <div class="col-md-4">
-                    <h4>Titulo:</h4>
-                    <p>
-                        {{auth()->user()->doctor->title}}
-                    </p>
-                </div>
-                -->
-                <div class="col-md-4">
-
                     <h4>Teléfono:</h4>
                     <p>
                         {{auth()->user()->doctor->phone}}
                     </p>
                 </div>
                 <div class="col-md-4">
-
                     <h4>Fecha de nacimiento:</h4>
                     <p>
                         {{auth()->user()->doctor->birthday}}
                     </p>
                 </div>
                 <div class="col-md-4">
-
                     <h4>Genero:</h4>
                     <p>
                         {{auth()->user()->doctor->gender}}
                     </p>
                 </div>
                 <div class="col-md-4">
-
                     <h4>Especialidad:</h4>
                     <p>
                         {{auth()->user()->doctor->specialty}}
@@ -90,8 +75,9 @@
             </div>
         </div>
     </div>
-    <?php /*
-    <div class="col-sm-12">
+    
+    @if ($status === 'Activo')
+    <div class="col-sm-12" id="report-dr">
         <div class="card">
             <div class="card-block row text-center">
                 <div class="col-md-12">
@@ -105,7 +91,6 @@
                                     <th>Folio</th>
                                     <th>Nombre del Paciente</th>
                                     <th>Fecha</th>
-                                    <!--<th>Total</th>-->
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,16 +106,11 @@
                                             </td>
                                             <td>{{ $study->patient_name }}</td>
                                             <td>{{ $study->formatted_date }}</td>
-                                            <!--<td>{{ number_format($study->total, 2, ',', '.') }}</td>-->
                                         </tr>
                                     @endif
                                 @endforeach
                             </tbody>
                             <tfoot>
-                                <!--<tr>
-                                    <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
-                                    <td><strong>${{ $totalSumFormatted }}</strong></td>
-                                </tr>-->
                                 <tr class="annual-return">
                                     <td colspan="2" style="text-align: right;"><strong>Cash Back DDU:</strong></td>
                                     <td><strong>${{ $annualReturnFormatted }}</strong></td>
@@ -146,9 +126,9 @@
             </div>
         </div>
     </div>
-    */ ?>
-    
+    @endif
 @endsection
+
 @section('css')
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <style>
@@ -197,4 +177,3 @@
     }
     </style>
 @endsection
-

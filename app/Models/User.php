@@ -61,6 +61,12 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new ResetPassword($token));
     }
 
+    public function doctorReports()
+    {
+        return $this->hasOne(DoctorReport::class);
+    }
+
+
     //Relación a la table doctors
     public function doctor()
     {

@@ -31,6 +31,12 @@ class Doctor extends Model
         return $this->belongsTo(User::class,'user_id','id')->withTrashed();
     }
 
+    public function doctorReports()
+    {
+        return $this->hasOne(DoctorReport::class);
+    }
+
+
     public function studies(){
         return $this->hasMany(Study::class,'doctor_id')->orderBy('created_at', 'DESC');
     } 

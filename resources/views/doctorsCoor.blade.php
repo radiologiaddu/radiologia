@@ -4,6 +4,7 @@
 @section('content')
     <!-- data tables css -->
     <link rel="stylesheet" href="{{ asset('/assets/plugins/data-tables/css/datatables.min.css') }}">
+    
     <style>
         .switch input[type=checkbox] {
             display: contents;
@@ -26,7 +27,53 @@
                 width: max-content !important;
             }
         }
-        
+        .switch input[type=checkbox] {
+            display: none;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
     </style>
     <style>
         .theme-bg4{
@@ -37,7 +84,13 @@
         }   
         .theme-bg3{
             background: linear-gradient(-135deg, #1d23e9 0%, #1dbae9 100%);
-        } 
+        }
+        .theme-bg6{
+            background: linear-gradient(-135deg, #2FCB1E 0%, #04431B 100%);
+        }
+        .theme-bg7{
+            background: linear-gradient(-135deg, #90CB1E 0%, #04CC1B 100%);
+        }
     </style>
     <div class="col-sm-12">
         <div class="card">
@@ -57,6 +110,8 @@
                                 
                                 <th>Nombre</th>
                                 <th>Correo</th>
+                                <th>Cash Back</th>
+                                <th>Disponible</th>
                                 <th>Status</th>
                                 <th>Acciones</th>
                             </tr>
@@ -87,6 +142,28 @@
                                         </div>
                                     </td>
                                     <td>
+                                    @if (!is_null($user->email_verified_at))
+                                        <div class="float-left col-md-6 col-sm-6">
+                                            <a href="/perfil-doctor/{{$user->id}}?showCashBackOnly=true" class="label theme-bg7 f-12 text-white btn-rounded cancel" title="Reporte Anual"><i class="feather icon-file mr-0"></i></a>
+                                        </div>
+                                        @endif
+                                    </td>
+                                    <td>
+    <label class="switch">
+        <input type="checkbox" class="status-switch"
+               data-id="{{ $user->id }}"
+               {{ $user->doctorReports && $user->doctorReports->status === 'Activo' ? 'checked' : '' }}
+        >
+        <span class="slider round"></span>
+    </label>
+</td>
+
+
+
+
+
+
+                                    <td>
                                         @if (is_null($user->email_verified_at))
                                             Sin verificar
                                         @else
@@ -94,6 +171,11 @@
                                         @endif
                                     </td>
                                     <td>
+                                    @if (!is_null($user->email_verified_at))
+                                        <div class="float-left col-md-6 col-sm-6">
+                                            <a href="/perfil-doctor/{{$user->id}}" class="label theme-bg6 f-12 text-white btn-rounded cancel" title="Reporte Anual"><i class="feather icon-file mr-0"></i></a>
+                                        </div>
+                                        @endif
 
                                         <div class="buttonAll">
                                             
@@ -315,5 +397,33 @@
                 } 
             });
         });
+
+        $(document).ready(function() {
+    $('.status-switch').change(function() {
+        var userId = $(this).data('id');
+        var isChecked = $(this).prop('checked');
+        var status = isChecked ? 'Activo' : 'Inactivo'; // Cambia el estado localmente
+
+        // Envía la solicitud AJAX para actualizar el estado
+        $.ajax({
+            url: '/actualizar-estatus/' + userId,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: status // Envía 'Activo' o 'Inactivo' según el checkbox
+            },
+            success: function(response) {
+                // Maneja la respuesta si es necesario
+                console.log(response); // Puedes mostrar un mensaje o realizar acciones adicionales
+            },
+            error: function(xhr) {
+                // Maneja errores si es necesario
+                console.error(xhr.responseText);
+            }
+        });
+    });
+});
+
+
     </script>
 @endsection

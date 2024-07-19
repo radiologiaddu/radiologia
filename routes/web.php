@@ -242,7 +242,8 @@ Route::group(['middleware'=>['verified','auth']],function(){
         Route::post('/finish', [App\Http\Controllers\coorController::class, 'finish'])->name('finish');
         Route::get('/historialCoo/{id}', [App\Http\Controllers\recordController::class, 'recordsCoo'])->name('historialCoo');  
         Route::get('/recordCoo', [App\Http\Controllers\recordController::class, 'allCoo'])->name('recordCoo');  
-        Route::post('/recordCooReload', [App\Http\Controllers\recordController::class, 'allCooReload'])->name('recordCooReload');  
+        Route::post('/recordCooReload', [App\Http\Controllers\recordController::class, 'allCooReload'])->name('recordCooReload');
+        Route::get('/perfil-doctor/{userId}', [App\Http\Controllers\DoctorController::class, 'showProfile'])->name('profile');  
     });
 
     Route::group(['middleware'=>['role:Radiologo']],function(){
@@ -280,3 +281,5 @@ Route::get('test', function () {
     event(new myEvent('Someone'));
     return "Event has been sent!";
 });
+// Ruta en web.php
+Route::post('/actualizar-estatus/{userId}', [App\Http\Controllers\DoctorController::class, 'actualizarEstatusReport']);

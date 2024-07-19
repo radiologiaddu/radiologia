@@ -3,6 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Doctor;
+use App\Models\DoctorReport;
+use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,17 +17,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-        $this->call([
-            RoleSeeder::class,
-            UserSeeder::class,
-            schedulesTableSeeder::class,
-            HoursTableSeeder::class,
-            OtherRolesTableSeeder::class,
-            cfdiTableSeeder::class,
-            interimDoctorSeeder::class,
-            radiologistSeeder::class,
-        ]);
+        // Lógica para llenar doctor_reports
+        $users = User::all();
 
+        foreach ($users as $user) {
+            $doctor = Doctor::where('user_id', $user->id)->first();
+
+            if ($doctor) {
+                DoctorReport::updateOrCreate(
+                    ['doctor_id' => $doctor->id],
+                    [
+                        'user_id' => $user->id,
+                        'status' => 'Activo', // Siempre Activo
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]
+                );
+            }
+        }
     }
 }

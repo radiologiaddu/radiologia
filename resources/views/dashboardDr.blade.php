@@ -162,8 +162,16 @@
                                                 <div class="text-mis-estudios">
                                                     <h2>Hola, {{auth()->user()->name}}</h2>
                                                     <h4>¡Genera un nuevo estudio para tu paciente!</h4>
-                                                    <!-- Agregar este bloque en la sección donde quieras mostrar los cupones Editado para actualizar-->
-                                                    @if (count($cupones) > 0 && false)
+                                                </div>
+                                                @if($doctorReport === 'Activo')
+                                                <div>
+                                                    <h5>Cash Back: {{$annualReturnFormatted}}</h5>
+                                                </div>
+                                                @endif
+                                            </div>
+                                            <div class="card-block card-btn">
+                                                <!-- Agregar este bloque en la sección donde quieras mostrar los cupones Editado para actualizar-->
+                                                @if (count($cupones) > 0)
                                                     <div class="card-block">
                                                         <div class="title-block">
                                                             <h4 style="color: #6E7BDE; animation: blink 3s infinite;">Tus Cupones</h4>
@@ -206,9 +214,6 @@
                                                         </div>
                                                     </div>
                                                     @endif
-                                                </div>
-                                            </div>
-                                            <div class="card-block card-btn">
                                                 <a href="{{route('Nuevoestudio')}}">
                                                     <button type="button" class="btn btn-rounded btn-new">NUEVO ESTUDIO</button>
                                                 </a>
