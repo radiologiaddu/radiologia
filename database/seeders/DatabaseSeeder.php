@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
                     ['doctor_id' => $doctor->id],
                     [
                         'user_id' => $user->id,
-                        'status' => 'Inactivo', // Siempre Activo
+                        'status' => 'Activo', // Siempre Activo
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
                     ]
