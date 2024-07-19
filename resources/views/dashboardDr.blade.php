@@ -171,7 +171,7 @@
                                             </div>
                                             <div class="card-block card-btn">
                                                 <!-- Agregar este bloque en la sección donde quieras mostrar los cupones Editado para actualizar-->
-                                                @if (count($cupones) > 0)
+                                                @if (count($cupones) > 0 && false)
                                                     <div class="card-block">
                                                         <div class="title-block">
                                                             <h4 style="color: #6E7BDE; animation: blink 3s infinite;">Tus Cupones</h4>

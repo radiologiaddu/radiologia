@@ -398,11 +398,11 @@
             });
         });
 
-        $(document).ready(function() {
-    $('.status-switch').change(function() {
+        // Delegar el evento de cambio para el checkbox de estado
+    $(document).on('change', '.status-switch', function() {
         var userId = $(this).data('id');
         var isChecked = $(this).prop('checked');
-        var status = isChecked ? 'Activo' : 'Inactivo'; // Cambia el estado localmente
+        var status = isChecked ? 'Activo' : 'Inactivo';
 
         // Envía la solicitud AJAX para actualizar el estado
         $.ajax({
@@ -410,19 +410,16 @@
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
-                status: status // Envía 'Activo' o 'Inactivo' según el checkbox
+                status: status
             },
             success: function(response) {
-                // Maneja la respuesta si es necesario
-                console.log(response); // Puedes mostrar un mensaje o realizar acciones adicionales
+                console.log("Actualizado");
             },
             error: function(xhr) {
-                // Maneja errores si es necesario
                 console.error(xhr.responseText);
             }
         });
     });
-});
 
 
     </script>

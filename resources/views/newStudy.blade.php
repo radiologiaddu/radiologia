@@ -263,7 +263,7 @@
                     </div>
                 </div>
                 <!-- Agregar la pregunta para el cupón -->
-                @if (count($cupones) > 0)
+                @if (count($cupones) > 0 && false)
     <div class="form-group row">
         <label for="use-coupon" class="col-sm-6 col-form-label text-right">¿Deseas utilizar un cupón?</label>
         <div class="col-sm-6">
