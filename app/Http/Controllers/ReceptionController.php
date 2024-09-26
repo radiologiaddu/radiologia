@@ -244,6 +244,17 @@ class ReceptionController extends Controller
                         <h6 class="col-12">
                             Cita:
         ';
+        /* Pendiente Septiembre
+        <h6 class="col-12">
+                            Correo del Doctor: ';
+                            if ($study->doctor_id == 0 ){
+                                $opciones .='<div id="" value="" class="col-12">'.$study->doctor->user->email.'</div>';
+                            }else{
+                                $opciones .='<div id="" value="" class="col-12">'.$study->doctor->user->email.'</div>';
+                            }
+                            $opciones .='
+                        </h6>
+        */
         if(isset($study->appointment)){
             $weekMap = [
                 0 => 'domingo',
@@ -289,7 +300,9 @@ class ReceptionController extends Controller
                             $study->patient_phone.'
                         </h6>
                     </div>';
-
+        /*' '.
+                            $study->paternal_surname.' '.
+                            $study->maternal_surname.*/
         return $opciones;     
     }
 

@@ -103,6 +103,7 @@ setlocale(LC_TIME, "spanish");
                                     <th class="tMovil">Folio</th>
                                     <th class="tMovil">Folio SAE</th>
                                     <th>Paciente</th>
+                                    <th>Fecha de toma</th>
                                     <th>Estudio</th>
                                     <th class="tMovil">Estatus</th>
                                     <th>Acción</th>
@@ -121,6 +122,13 @@ setlocale(LC_TIME, "spanish");
                                     </td>
                                     <td class="tMovil">{{$study->sae}}</td>
                                     <td>{{$study->patient_name}} {{$study->paternal_surname}} {{$study->maternal_surname}}</td>
+                                    <td>
+                                        @if ($study->date)
+                                            {{$study->date}}
+                                        @else
+                                            No Registrada
+                                        @endif
+                                    </td>
                                     <td>
                                         @if($study->study_type->count() > 0)
                                             {{$study->study_type[0]->type->type}}

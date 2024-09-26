@@ -118,6 +118,10 @@
                                                 {{$study->doctor->alias}}
                                             @endif
                                         </h6>
+                                        <!--<h6 class="col-12">
+                                            Correo del doctor: 
+                                                {{$study->doctor->user->email}}
+                                            </h6>-->
                                         <h6 class="col-12">
                                             Cita:
                                             @if (isset($study->appointment))
@@ -134,10 +138,10 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <h5 class="col-12">
-                                            Datos Paciente
+                                            Datos Paciente:
                                         </h5>
                                         <h6 class="col-12">
-                                            {{$study->patient_name}}
+                                        {{$study->patient_name}} <!--{{$study->paternal_surname}} {{$study->maternal_surname}}-->
                                         </h6>
                                         <h6 class="col-12">
                                             {{$study->patient_email}}
@@ -152,7 +156,7 @@
                         <h5 class="mt-4 mb-4 form-label">Añade los estudios que se enviaran por correo, o pega un link para poder descargar los estudios.</h5>
 
                         <div class="form-row">
-                            <p>El tamaño maximo de archivos que puedes enviar es de <strong>25 MB</strong></p>
+                            <p>El tamaño maximo de archivos que puedes enviar es de: <strong>25 MB</strong></p>
                             <div class="form-row col-md-12" style="margin-bottom: 25px">
                                 <div class="input-images col-md-12"></div>
                             </div>

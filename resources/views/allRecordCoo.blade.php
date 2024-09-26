@@ -102,7 +102,7 @@ $weekMap = [
                                     <td class="tMovil">{{$study->status}}</td>
                                     <td class="tMovil">
                                         @if ($study->date)
-                                            {{ $study->date }}
+                                            {{$study->date}}
                                         @else
                                             No Registrada
                                         @endif

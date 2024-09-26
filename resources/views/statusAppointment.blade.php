@@ -84,45 +84,72 @@
                 </div>
                 <div class="col-sm-12">
                     <div class="card" style="border-radius: 25px">
-                        <div class="card-header text-center">
-                            <div class="row">
-                                <h3 class="col-12">
-                                    Su nombre es:
-                                </h3>
-                                <div class="text-center">
-                                    <h4 class="col-12">
-                                        {{$study->patient_name}} {{$study->paternal_surname}} {{$study->maternal_surname}}
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        @if ($study->doctor_id == 0)
-                            <div class="card-header text-center">
-                                <div class="row">
-                                    <h3 class="col-12">
-                                        Viene de parte de
-                                    </h3>
-                                    <div class="text-center">
-                                        <h4 class="col-12">
-                                            {{$study->doctor_name}}
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div> 
-                        @else
-                            <div class="card-header text-center">
-                                <div class="row">
-                                    <h3 class="col-12">
-                                        Viene de parte de
-                                    </h3>
-                                    <div class="text-center">
-                                        <h4 class="col-12">
-                                            {{$study->doctor->alias}}
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
+                    <div class="card-header text-center">
+    <div class="row">
+        <h3 class="col-12">
+            Su nombre es:
+        </h3>
+            <h4 class="col-12 ">
+                <b>
+                {{$study->patient_name}} {{$study->paternal_surname}} {{$study->maternal_surname}}
+                </b>
+            </h4>
+        <div class="text-center">
+            <h4 class="col-12">
+                <!-- Mostrar correo del paciente si existe -->
+                @if($study->patient_email)
+                    Correo del paciente: {{$study->patient_email}}
+                @endif
+            </h4>
+        </div>
+        <div class="text-center">
+            <h4 class="col-12">
+                <!-- Mostrar edad y fecha de nacimiento del paciente -->
+                Fecha de nacimiento: {{ \Carbon\Carbon::parse($study->birthday)->format('d/m/Y') }}
+                <br>
+                Edad: {{ $study->edad() }} años
+            </h4>
+        </div>
+    </div>
+</div>
+
+@if ($study->doctor_id == 0)
+    <div class="card-header text-center">
+        <div class="row">
+            <h3 class="col-12">
+                Viene de parte de
+            </h3>
+            <div class="text-center">
+                <h4 class="col-12">
+                    {{$study->doctor_name}}
+                </h4>
+    <h4 class="col-12">
+            Correo del doctor: {{$study->doctor->user->email}}
+    </h4>
+
+
+            </div>
+        </div>
+    </div> 
+@else
+    <div class="card-header text-center">
+        <div class="row">
+            <h3 class="col-12">
+                Viene de parte de
+            </h3>
+            <div class="text-center">
+                <h4 class="col-12">
+                    {{$study->doctor->alias}}
+                </h4>
+                <!-- Mostrar correo del doctor si existe -->
+                    <h4 class="col-12">
+                    Correo del doctor: {{$study->doctor->user->email}}
+                    </h4>
+            </div>
+        </div>
+    </div>
+@endif
+
                         
                         <div class="card-body text-center">
                             <div class="mb-4">
