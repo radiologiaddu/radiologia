@@ -101,7 +101,7 @@
                                     Datos de Estudio
                                 </h4>
                                 <div class="text-center col-12 row">
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-4">
                                         <h6 class="col-12">
                                             Folio: 
                                             @if ($study->internal == 1)
@@ -118,10 +118,10 @@
                                                 {{$study->doctor->alias}}
                                             @endif
                                         </h6>
-                                        <!--<h6 class="col-12">
+                                        <h6 class="col-12">
                                             Correo del doctor: 
                                                 {{$study->doctor->user->email}}
-                                            </h6>-->
+                                            </h6>
                                         <h6 class="col-12">
                                             Cita:
                                             @if (isset($study->appointment))
@@ -136,12 +136,62 @@
                                         @endif
                                         </h6>
                                     </div>
-                                    <div class="col-12 col-md-6">
+
+                                    <!-- Aquí se integra la sección de preguntas y respuestas -->
+    <div class="col-12 col-md-4">
+        @foreach ($arrayStudies as $itemStudy)
+            <h4 class="mt-3 mb-3">{{ $itemStudy->title }}</h4>
+            @foreach ($itemStudy->questions as $question)
+                <h5 class="mb-3">{{ $question->question }}</h5>
+                @foreach ($question->answers as $answer)
+                    <li>{{ $answer }}</li>
+                @endforeach
+                @if (!is_null($question->class_note))
+                    @if ($question->class_note == "simpleNote")
+                        <div class="form-group mt-3">
+                            <label class="form-check-label" for="simpleNote" style="font-size: 14px;">{!! nl2br($question->note) !!}</label>
+                        </div>
+                    @else
+                        <div class="form-group mt-3">
+                            <label class="form-check-label" for="highlightedNote" style="font-size: 14px;">
+                                <div style="background: rgb(110,123,222); border-radius: 50%; height: 30px; width: 30px; text-align: center; display: flex; float: left;">
+                                    <img src="https://app.ddu.mx/image/blanco100.png" style="width: 20px; height: 20px; margin-left: auto; margin-right: auto;" alt="User-Profile-Image">
+                                </div>
+                                <span style="background: rgb(110,123,222); color: white; font-size: 16px; margin-left: 5px; padding: 5px; display: flex;">{!! nl2br($question->note) !!}</span>
+                                <div class="clearfix"></div>
+                            </label>
+                        </div>
+                    @endif
+                @endif
+            @endforeach
+
+            @if (!is_null($itemStudy->class_note))
+                @if ($itemStudy->class_note == "simpleNote")
+                    <div class="form-group mt-3">
+                        <label class="form-check-label" for="simpleNote" style="font-size: 14px;">{!! nl2br($itemStudy->note) !!}</label>
+                    </div>
+                @else
+                    <div class="form-group mt-3">
+                        <label class="form-check-label" for="highlightedNote" style="font-size: 14px;">
+                            <div style="background: rgb(110,123,222); border-radius: 50%; height: 30px; width: 30px; text-align: center; display: flex; float: left;">
+                                <img src="https://app.ddu.mx/image/blanco100.png" style="width: 20px; height: 20px; margin-left: auto; margin-right: auto;" alt="User-Profile-Image">
+                            </div>
+                            <span style="background: rgb(110,123,222); color: white; font-size: 16px; margin-left: 5px; padding: 5px; display: flex;">{!! nl2br($itemStudy->note) !!}</span>
+                            <div class="clearfix"></div>
+                        </label>
+                    </div>
+                @endif
+            @endif
+        @endforeach
+    </div>
+                                    <!--Ajuste Temporal-->
+
+                                    <div class="col-12 col-md-4">
                                         <h5 class="col-12">
                                             Datos Paciente:
                                         </h5>
                                         <h6 class="col-12">
-                                        {{$study->patient_name}} <!--{{$study->paternal_surname}} {{$study->maternal_surname}}-->
+                                        {{$study->patient_name}} {{$study->paternal_surname}} {{$study->maternal_surname}}
                                         </h6>
                                         <h6 class="col-12">
                                             {{$study->patient_email}}

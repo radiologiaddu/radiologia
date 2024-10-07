@@ -76,10 +76,12 @@ $weekMap = [
                             </h4>
                         @else
                             <h4 class="col-12">
-                                {{$study->doctor->alias}}
+                                {{$study->doctor->alias ?? 'Alias no disponible'}}
                             </h4>
                             <h4 class="col-12">
-                                {{$study->doctor->user->name}} {{$study->doctor->paternalSurname}} {{$study->doctor->maternalSurname}}
+                                {{$study->doctor->user->name ?? 'Nombre no disponible'}}
+                                {{$study->doctor->user->paternalSurname ?? ''}} 
+                                {{$study->doctor->user->maternalSurname ?? ''}}
                             </h4>
                         @endif
                     </div>

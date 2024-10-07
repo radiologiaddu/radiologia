@@ -108,6 +108,8 @@
                 Fecha de nacimiento: {{ \Carbon\Carbon::parse($study->birthday)->format('d/m/Y') }}
                 <br>
                 Edad: {{ $study->edad() }} años
+                <br>
+                Telefono: {{$study->patient_phone}}
             </h4>
         </div>
     </div>

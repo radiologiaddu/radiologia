@@ -151,12 +151,51 @@ class ReceptionController extends Controller
 
         if(is_null($id)){
             $study = null;
+            $arrayStudies = [];
             $studies = Study::where('status', 'Realizado')->select('id','folio','patient_name','paternal_surname','maternal_surname','internal')->with('study_type.type')->orderBy('created_at', 'DESC')->get();
         }else{
             $study = Study::where('status', 'Realizado')->with('appointment','doctor')->findOrFail($id);
             $studies = null;
+            $arrayStudies = [];
+
+    foreach ($study->study_type as $study_type) {
+        $arrayQuestions = [];
+        $type = $study_type->type;
+
+        foreach ($study_type->type_question as $type_question) {
+            $arrayAnswer = [];
+            $question = $type_question->question;
+
+            if ($question->kind == "texto") {
+                array_push($arrayAnswer, $type_question->answer);
+            } else {
+                foreach ($type_question->question_answer as $question_answer) {
+                    $answer = $question_answer->answer;
+                    array_push($arrayAnswer, $answer->answer);
+                }
+            }
+
+            $objQuestion = (object)[
+                'question' => $question->question,
+                'class_note' => $question->class_note,
+                'note' => $question->note,
+                'answers' => $arrayAnswer,
+            ];
+
+            array_push($arrayQuestions, $objQuestion);
         }
-        return view('sendStudy',compact('study','studies'));
+
+        $objStudy = (object)[
+            'title' => $type->type,
+            'questions' => $arrayQuestions,
+            'note' => $type->note,
+            'class_note' => $type->class_note,
+        ];
+
+        array_push($arrayStudies, $objStudy);
+    }
+        }
+        return view('sendStudy',compact('study','studies','arrayStudies'));
     }
 
     public function sendEmailStudy(Request $request, $id = null)
@@ -217,94 +256,136 @@ class ReceptionController extends Controller
 
     }
     public function getStudy(Request $request)
-    {
-        set_time_limit(0);
+{
+    set_time_limit(0);
 
-        $study = Study::with('appointment','doctor')->findOrFail($request->id);
-        $opciones = "";
-        $opciones .='<div class="col-12 col-md-6">
-                        <h6 class="col-12">
-                            Folio: ';
-                            if ($study->internal == 1){
-                                $opciones .='R'.sprintf('%06d',$study->folio);
-                            }else{
-                                $opciones .='D'.sprintf('%06d',$study->folio);
-                            }
-                        $opciones .=
-                        '</h6>
-                        <h6 class="col-12">
-                            Doctor: ';
-                            if ($study->doctor_id == 0){
-                                $opciones .='<div id="reloadDrName" value="false" class="col-12">'.$study->doctor_name.'</div>';
-                            }else{
-                                $opciones .='<div id="reloadDrName" value="true" class="col-12">'.$study->doctor->alias.'</div>';
-                            }
-                            $opciones .='
-                        </h6>
-                        <h6 class="col-12">
-                            Cita:
-        ';
-        /* Pendiente Septiembre
-        <h6 class="col-12">
-                            Correo del Doctor: ';
-                            if ($study->doctor_id == 0 ){
-                                $opciones .='<div id="" value="" class="col-12">'.$study->doctor->user->email.'</div>';
-                            }else{
-                                $opciones .='<div id="" value="" class="col-12">'.$study->doctor->user->email.'</div>';
-                            }
-                            $opciones .='
-                        </h6>
-        */
-        if(isset($study->appointment)){
-            $weekMap = [
-                0 => 'domingo',
-                1 => 'lunes',
-                2 => 'martes',
-                3 => 'miércoles',
-                4 => 'jueves',
-                5 => 'viernes',
-                6 => 'sábado',
+    $study = Study::with('appointment', 'doctor.user')->findOrFail($request->id);
+    $arrayStudies = [];
+
+    foreach ($study->study_type as $study_type) {
+        $arrayQuestions = [];
+        $type = $study_type->type;
+
+        foreach ($study_type->type_question as $type_question) {
+            $arrayAnswer = [];
+            $question = $type_question->question;
+
+            if ($question->kind == "texto") {
+                array_push($arrayAnswer, $type_question->answer);
+            } else {
+                foreach ($type_question->question_answer as $question_answer) {
+                    $answer = $question_answer->answer;
+                    array_push($arrayAnswer, $answer->answer);
+                }
+            }
+
+            $objQuestion = (object)[
+                'question' => $question->question,
+                'class_note' => $question->class_note,
+                'note' => $question->note,
+                'answers' => $arrayAnswer,
             ];
-            $months = [
-                '01' => 'Enero',
-                '02' => 'Febrero',
-                '03' => 'Marzo',
-                '04' => 'Abril',
-                '05' => 'Mayo',
-                '06' => 'Junio',
-                '07' => 'Julio',
-                '08' => 'Agosto',
-                '09' => 'Septiembre',
-                '10' => 'Octubre',
-                '11' => 'Noviembre',
-                '12' => 'Diciembre',
-            ];
-            $opciones .=$weekMap[strftime("%w",strtotime($study->appointment->date))].strftime("%d",strtotime($study->appointment->date)).strtoupper($months[strftime("%m",strtotime($study->appointment->date))]).strftime("%Y",strtotime($study->appointment->date));
-            $opciones .=' hrs.<br>'.$study->appointment->time;
-        }else{
-            $opciones .='Sin agendar cita';
+
+            array_push($arrayQuestions, $objQuestion);
         }
-        $opciones .=' </h6>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <h5 class="col-12">
-                            DATOS DEL PACIENTE
-                        </h5>
-                        <h6 class="col-12">'.
-                            $study->patient_name.'
-                        </h6>
-                        <h6 class="col-12">'.
-                            $study->patient_email.'
-                        </h6>
-                        <h6 class="col-12">'.
-                            $study->patient_phone.'
-                        </h6>
-                    </div>';
-        /*' '.
-                            $study->paternal_surname.' '.
-                            $study->maternal_surname.*/
-        return $opciones;     
+
+        $objStudy = (object)[
+            'title' => $type->type,
+            'questions' => $arrayQuestions,
+            'note' => $type->note,
+            'class_note' => $type->class_note,
+        ];
+
+        array_push($arrayStudies, $objStudy);
     }
+
+    $opciones = '<div class="col-12 col-md-4">';
+    $opciones .= '<h6 class="col-12">Folio: ' . ($study->internal == 1 ? 'R' : 'D') . sprintf('%06d', $study->folio) . '</h6>';
+    $opciones .= '<h6 class="col-12">Doctor: ' . ($study->doctor_id == 0 ? '<div id="reloadDrName" value="false" class="col-12">' . $study->doctor_name . '</div>' : '<div id="reloadDrName" value="true" class="col-12">' . $study->doctor->alias . '</div>') . '</h6>';
+    
+    // Verificación de existencia del usuario del doctor
+    $doctorEmail = $study->doctor_id == 0 ? $study->doctor->user->email ?? 'Sin correo' : $study->doctor->user->email ?? 'Sin correo';
+    $opciones .= '<h6 class="col-12">Correo del Doctor: <div id="" value="" class="col-12">' . $doctorEmail . '</div></h6>';
+    
+    $opciones .= '<h6 class="col-12">Cita: ';
+    if (isset($study->appointment)) {
+        $weekMap = [
+            0 => 'domingo',
+            1 => 'lunes',
+            2 => 'martes',
+            3 => 'miércoles',
+            4 => 'jueves',
+            5 => 'viernes',
+            6 => 'sábado',
+        ];
+        $months = [
+            '01' => 'Enero',
+            '02' => 'Febrero',
+            '03' => 'Marzo',
+            '04' => 'Abril',
+            '05' => 'Mayo',
+            '06' => 'Junio',
+            '07' => 'Julio',
+            '08' => 'Agosto',
+            '09' => 'Septiembre',
+            '10' => 'Octubre',
+            '11' => 'Noviembre',
+            '12' => 'Diciembre',
+        ];
+        $opciones .= $weekMap[date('w', strtotime($study->appointment->date))] . date('d', strtotime($study->appointment->date)) . strtoupper($months[date('m', strtotime($study->appointment->date))]) . date('Y', strtotime($study->appointment->date)) . ' hrs.<br>' . $study->appointment->time;
+    } else {
+        $opciones .= 'Sin agendar cita';
+    }
+    $opciones .= '</h6></div>';
+
+    // Rellenar los estudios
+    $opciones .= '<div class="col-12 col-md-4">';
+    foreach ($arrayStudies as $itemStudy) {
+        $opciones .= '<h4 class="mt-3 mb-3">' . $itemStudy->title . '</h4>';
+        foreach ($itemStudy->questions as $question) {
+            $opciones .= '<h5 class="mb-3">' . $question->question . '</h5>';
+            foreach ($question->answers as $answer) {
+                $opciones .= '<li>' . $answer . '</li>';
+            }
+            if (!is_null($question->class_note)) {
+                if ($question->class_note == "simpleNote") {
+                    $opciones .= '<div class="form-group mt-3"><label class="form-check-label" for="simpleNote" style="font-size: 14px;">' . nl2br($question->note) . '</label></div>';
+                } else {
+                    $opciones .= '<div class="form-group mt-3"><label class="form-check-label" for="highlightedNote" style="font-size: 14px;">
+                        <div style="background: rgb(110,123,222); border-radius: 50%; height: 30px; width: 30px; text-align: center; display: flex; float: left;">
+                            <img src="https://app.ddu.mx/image/blanco100.png" style="width: 20px; height: 20px; margin-left: auto; margin-right: auto;" alt="User-Profile-Image">
+                        </div>
+                        <span style="background: rgb(110,123,222); color: white; font-size: 16px; margin-left: 5px; padding: 5px; display: flex;">' . nl2br($question->note) . '</span>
+                        <div class="clearfix"></div>
+                    </label></div>';
+                }
+            }
+        }
+
+        if (!is_null($itemStudy->class_note)) {
+            if ($itemStudy->class_note == "simpleNote") {
+                $opciones .= '<div class="form-group mt-3"><label class="form-check-label" for="simpleNote" style="font-size: 14px;">' . nl2br($itemStudy->note) . '</label></div>';
+            } else {
+                $opciones .= '<div class="form-group mt-3"><label class="form-check-label" for="highlightedNote" style="font-size: 14px;">
+                    <div style="background: rgb(110,123,222); border-radius: 50%; height: 30px; width: 30px; text-align: center; display: flex; float: left;">
+                        <img src="https://app.ddu.mx/image/blanco100.png" style="width: 20px; height: 20px; margin-left: auto; margin-right: auto;" alt="User-Profile-Image">
+                    </div>
+                    <span style="background: rgb(110,123,222); color: white; font-size: 16px; margin-left: 5px; padding: 5px; display: flex;">' . nl2br($itemStudy->note) . '</span>
+                    <div class="clearfix"></div>
+                </label></div>';
+            }
+        }
+    }
+    $opciones .= '</div>';
+    $opciones .= '<div class="col-12 col-md-4">
+        <h5 class="col-12">DATOS DEL PACIENTE</h5>
+        <h6 class="col-12">' . $study->patient_name . ' ' . $study->paternal_surname . ' ' . $study->maternal_surname . '</h6>
+        <h6 class="col-12">' . $study->patient_email . '</h6>
+        <h6 class="col-12">' . $study->patient_phone . '</h6>
+    </div>';
+
+    return $opciones;
+}
 
     public function editRecepcion($id)
     {
