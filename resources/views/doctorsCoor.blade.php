@@ -179,7 +179,7 @@
 
                                         <div class="buttonAll">
                                             
-                                            @if (is_null($user->email_verified_at) && !$user->status)
+                                            @if (is_null($user->email_verified_at) && !$user->status && false)
                                                 <a id="{{$user->id}}" class="label theme-bg5 f-12 text-white btn-rounded remove" title="Eliminar"><i class="feather icon-trash-2 mr-0"></i></a>
 
                                                 <a title="Editar" class=" btn-rounded text-white label theme-bg4 f-12 edit" id="{{$user->id}}">

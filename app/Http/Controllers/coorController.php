@@ -546,8 +546,7 @@ class coorController extends Controller
 
     public function doctores()
 {
-    $users = User::where('status', '!=', null)
-                 ->role('Doctor')
+    $users = User::role('Doctor')
                  ->with(['doctor', 'doctorReports']) // Cargar relaciones
                  ->orderBy('id')
                  ->get();

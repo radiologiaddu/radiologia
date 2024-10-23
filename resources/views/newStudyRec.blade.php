@@ -147,64 +147,14 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label class="form-label">¿SU FECHA DE NACIMIENTO?</label>
-                            @php
-                            $dateBirthday = [
-                                0 => $year,
-                                1 => 01,
-                                2 => 01
-                            ];
-                        @endphp  
-                        <div class="row">
-                            <div class="col-12">
-                                <label class="form-label"> <span style="color:red">*</span> DÍA</label>
-                                <select class="js-example-basic-single form-control {{ $errors->has('day') ? ' is-invalid' : '' }}" id="day" name="day" required>
-                                    <option value="" selected disabled>Selecciona el día de su nacimiento</option>
-                                    @for ($i = 1; $i <= 31; $i++)
-                                        <option value="{{sprintf('%02d',$i)}}" 
-                                            @if (sprintf('%02d',$i) == $dateBirthday[2] )
-                                                selected
-                                            @endif
-                                        >{{sprintf('%02d',$i)}}</option>
-                                    @endfor
-                                </select>                                    
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label"><span style="color:red">*</span> MES</label>
-                                <select class="js-example-basic-single form-control {{ $errors->has('month') ? ' is-invalid' : '' }}" id="month" name="month" required>
-                                    <option value="" selected disabled>Selecciona el mes de su nacimiento</option>
-                                    @for ($j = 1; $j <= 12; $j++)
-                                        <option value="{{sprintf('%02d',$j)}}" 
-                                            @if (sprintf('%02d',$j) == $dateBirthday[1] )
-                                                selected
-                                            @endif
-                                        >{{$months[sprintf('%02d',$j)]}}</option>
-                                    @endfor
-                                </select>                                    
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label"><span style="color:red">*</span> AÑO</label>
-                                <select class="js-example-basic-single form-control {{ $errors->has('year') ? ' is-invalid' : '' }}" id="year" name="year" required>
-                                    <option value="" selected disabled>Selecciona el año de su nacimiento</option>
-                                    @for ($i = 1; $i <= 100; $i++)
-                                        <option value="{{$year}}" 
-                                            @if ($year == $dateBirthday[0] )
-                                                selected
-                                            @endif
-                                        >{{$year}}</option>
-                                        @php
-                                            $year--;
-                                        @endphp
-                                    @endfor
-                                </select>                                    
-                            </div>
-                        </div>
+                        <label class="form-label">¿SU FECHA DE NACIMIENTO?</label>
+                        <input type="date" class="form-control {{ $errors->has('birthday') ? ' is-invalid' : '' }}" id="birthday" name="birthday" required>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label class="form-label"><span style="color:red">*</span> Correo electrónico de tu paciente:</label>
-                            <input style="text-transform:lowercase;" id="patient_email" class="form-control" placeholder="Ej: rmarialm@gmail.com" type="email" name="patient_email" required>
+                            <label class="form-label"> Correo electrónico de tu paciente:</label>
+                            <input style="text-transform:lowercase;" id="patient_email" class="form-control" placeholder="Ej: rmarialm@gmail.com" type="email" name="patient_email">
                         </div>        
                     </div>
                     <div class="col-md-12">
@@ -278,7 +228,7 @@
                             Fecha de nacimiento: 
                         </strong>
                         <p id="p-birthday">
-                            <span id="birthday-day"></span> de <span id="birthday-month"></span> de <span id="birthday-year"></span>
+                            <span id="birthday-day">
                         </p>
                         <strong class="text-dark">
                             Correo electrónico: 
@@ -540,7 +490,8 @@
         if(valid){
             var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             var regexPhone = /^([0-9]{3})+(-)+([0-9]{3})+(-)+([0-9]{4})/;
-            if(!regex.test($("#patient_email").val()) || !regexPhone.test($("#patient_phone").val())){
+            //!regex.test($("#patient_email").val()) || Validacion de mail
+            if(!regexPhone.test($("#patient_phone").val())){
                 console.log("Formato incorrecto: "+$( this ).attr('id'));
                 valid = false;
             }
@@ -618,7 +569,8 @@
         if(valid){
             var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             var regexPhone = /^([0-9]{3})+(-)+([0-9]{3})+(-)+([0-9]{4})/;
-            if(!regex.test($("#patient_email").val()) || !regexPhone.test($("#patient_phone").val())){
+            //!regex.test($("#patient_email").val()) || Validacion de mail
+            if(!regexPhone.test($("#patient_phone").val())){
                 console.log("Formato incorrecto: "+$( this ).attr('id'));
                 valid = false;
             }
@@ -798,7 +750,11 @@
         var value = $(this).val();
         $("#p-msurname").html(value);
     });
-    $("#day").change(function(evt){
+    $("#birthday").change(function(evt){
+        var value = $(this).val();
+        $("#birthday-day").html(value);
+    });
+    /*$("#day").change(function(evt){
         var value = $(this).val();
         $("#birthday-day").html(value);
     });
@@ -809,7 +765,7 @@
     $("#year").change(function(evt){
         var value = $(this).val();
         $("#birthday-year").html(value);
-    });
+    });*/
     
     $("#patient_email").change(function(evt){
         var value = $(this).val();

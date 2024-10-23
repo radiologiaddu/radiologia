@@ -336,6 +336,12 @@ class DoctorController extends Controller
             case 'Cupon25':
                 $couponMessage = 'El doctor hizo un descuento del 25%';
                 break;
+            case 'Cupon20':
+                $couponMessage = 'El doctor hizo un descuento del 20%';
+                break;
+            case 'Cupon15':
+                $couponMessage = 'El doctor hizo un descuento del 15%';
+                break;        
             case 'Cupon10_1':
             case 'Cupon10_2':
             case 'Cupon10_3':
@@ -359,7 +365,7 @@ class DoctorController extends Controller
             'status' => "Creado",
             'qr' => $token,
             'total' => $request->total,
-            'birthday' => $request->year."-".$request->month."-".$request->day,
+            'birthday' => $request->birthday,
 
         ]);
         if($request->duration != '00:00'){

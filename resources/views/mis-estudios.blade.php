@@ -88,6 +88,12 @@ $weekMap = [
                                                                             case 'Cupon25':
                                                                                 $descuento = '25% de Descuento';
                                                                                 break;
+                                                                            case 'Cupon20':
+                                                                                $descuento = '20% de Descuento';
+                                                                                break;
+                                                                            case 'Cupon15':
+                                                                                $descuento = '15% de Descuento';
+                                                                                break;
                                                                             default:
                                                                                 $descuento = $cupon->nombre_cupon;
                                                                                 break;

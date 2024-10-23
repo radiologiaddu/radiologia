@@ -529,11 +529,13 @@ class UserController extends Controller
             // Crear entradas en la tabla Cupones para actualizar
     $cupones = [
         //['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon75', 'estatus' => 'Activo'],
-        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon50', 'estatus' => 'Activo'],
-        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon25', 'estatus' => 'Activo'],
+        /*['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon50', 'estatus' => 'Activo'],
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon25', 'estatus' => 'Activo'],*/
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon20', 'estatus' => 'Activo'],
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon15', 'estatus' => 'Activo'],
         ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon10_1', 'estatus' => 'Activo'],
-        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon10_2', 'estatus' => 'Activo'],
-        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon10_3', 'estatus' => 'Activo'],
+        /*['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon10_2', 'estatus' => 'Activo'],
+        ['id_doctor' => $doctor->id, 'nombre_cupon' => 'Cupon10_3', 'estatus' => 'Activo'],*/
     ];
     // Insertar las entradas en la tabla Cupones
     DB::table('cupones')->insert($cupones);

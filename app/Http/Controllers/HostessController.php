@@ -209,7 +209,7 @@ class HostessController extends Controller
             'status' => "Creado",
             'qr' => $token,
             'total' => $request->total,
-            'birthday' => $request->year."-".$request->month."-".$request->day,
+            'birthday' => $request->birthday,
             'internal' => 1
         ]);
         if($request->duration != '00:00'){

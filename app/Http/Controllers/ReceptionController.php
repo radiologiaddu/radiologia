@@ -1034,7 +1034,8 @@ class ReceptionController extends Controller
             'status' => "Llegada",
             'qr' => $token,
             'total' => $request->total,
-            'birthday' => $request->year."-".$request->month."-".$request->day,
+            //'birthday' => $request->year."-".$request->month."-".$request->day,
+            'birthday' => $request->birthday,
             'internal' => 1,
             'referral' => $request->referral,
         ]);
