@@ -186,6 +186,18 @@ $weekMap = [
                             </h4>
                         </h4>
                         <h4 class="mb-3">
+                            <strong>Observaciones Radiologo:</strong> 
+                            <h4 class="col-12">
+                                {!! nl2br($study->obs_rad ?? 'Sin observaciones de Radiología') !!}
+                            </h4>
+                        </h4>
+                        <h4 class="mb-3">
+                            <strong>Observaciones Recepción:</strong> 
+                            <h4 class="col-12">
+                                {!! nl2br($study->obs_recep ?? 'Sin observaciones de Recepción') !!}
+                            </h4>
+                        </h4>
+                        <h4 class="mb-3">
                             <strong>Tiempo de estudio:</strong> 
                             <h4 class="col-12">
                                 {{$study->duration}}

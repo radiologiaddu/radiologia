@@ -199,7 +199,9 @@ Route::group(['middleware'=>['verified','auth']],function(){
         //Route::post('/questionRec', [App\Http\Controllers\DoctorController::class, 'question'])->name('questionRec');
         Route::post('/addStudyRec', [App\Http\Controllers\ReceptionController::class, 'store'])->name('addStudyRec');
         Route::get('/AgendaRecepcion', [App\Http\Controllers\coorController::class, 'agendaRecepcion'])->name('AgendaRecepcion');
-        Route::post('/newDateRecepcion', [App\Http\Controllers\coorController::class, 'newDate'])->name('newDateRecepcion');      
+        Route::post('/newDateRecepcion', [App\Http\Controllers\coorController::class, 'newDate'])->name('newDateRecepcion');
+        Route::patch('/studies/{id}/delete', [App\Http\Controllers\StudyController::class, 'delete'])->name('studies.delete');
+        Route::put('studies/{study}/update-obs-recep', [App\Http\Controllers\StudyController::class, 'updateObsRecep'])->name('studies.updateObsRecep');
     });
     
     Route::group(['middleware'=>['role:Hostess']],function(){
@@ -251,7 +253,8 @@ Route::group(['middleware'=>['verified','auth']],function(){
         Route::get('/Radiologo', [App\Http\Controllers\radiologistController::class, 'index'])->name('Radiologo');  
         Route::post('/RadiologoReload', [App\Http\Controllers\radiologistController::class, 'indexReload'])->name('RadiologoReload');  
         Route::post('/finishRadio', [App\Http\Controllers\radiologistController::class, 'finish'])->name('finishRadio');
-        Route::post('/newDateRadio', [App\Http\Controllers\coorController::class, 'newDate'])->name('newDateRadio');        
+        Route::post('/newDateRadio', [App\Http\Controllers\coorController::class, 'newDate'])->name('newDateRadio');
+        Route::put('/studies/{id}', [App\Http\Controllers\StudyController::class, 'update'])->name('studies.update');
     });
 });
 

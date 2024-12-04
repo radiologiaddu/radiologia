@@ -43,7 +43,11 @@ class Study extends Model
         'tax',
         'id_discount',
         'discount',
-        'referral'
+        'referral',
+        'obs_recep',
+        'date_recep',
+        'obs_rad',
+        'date_rad',
     ];
 
     public function dias(){

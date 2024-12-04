@@ -15,6 +15,9 @@
     #zero-configurationo_length{
         margin-left: 50px;
     }
+    .theme-bg6{
+        background-color: red;
+    }
 </style>
 
 <link rel="stylesheet" href="{{ asset('/css/allStudy.css') }}">
@@ -183,6 +186,41 @@ setlocale(LC_TIME, "spanish");
                                             <a title="FOLIO" class="label theme-folio f-12 btn-rounded" data-toggle="modal" data-target="#modal{{$study->id}}"><i class="fas fa-file-alt mr-0"></i></a>
 
                                         @endif
+                                        @if ($study->status == "Llegada")
+    <!-- Botón para activar el modal -->
+<a href="javascript:void(0);" class="label theme-bg6 f-12 text-white btn-rounded" title="Eliminar" onclick="openDeleteModal({{ $study->id }})">
+    <i class="feather icon-trash mr-0"></i>
+</a>
+
+    <!-- Modal de confirmación de eliminación -->
+<!-- Modal -->
+<div class="modal fade" id="deleteModal-{{ $study->id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ $study->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel-{{ $study->id }}">¿Estás seguro de eliminar este estudio?</h5>
+        <!--<button type="button" class="btn-close" id="cancelButton-{{ $study->id }}" aria-label="Close"></button>-->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        Esta acción no se puede deshacer.<br> ¿Estás seguro de que deseas eliminar el estudio?
+      </div>
+      <div class="modal-footer">
+        <!-- Botón de Aceptar -->
+        <form action="{{ route('studies.delete', $study->id) }}" method="POST">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="btn btn-danger">Aceptar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@endif
+
+
                                     </td>
                                 </tr>
                                 @endforeach
@@ -202,6 +240,14 @@ setlocale(LC_TIME, "spanish");
     <script src="{{ asset('/assets/js/pages/tbl-datatable-custom.js') }} "></script>
     
     <script type="text/javascript">
+
+// Función para abrir el modal
+function openDeleteModal(studyId) {
+    const modalElement = document.getElementById('deleteModal-' + studyId);
+    const modal = new bootstrap.Modal(modalElement); // Crear una nueva instancia
+    modal.show();  // Abre el modal
+}
+
         $(window).on('load', function() {
             $('#modal-sound').modal('show');
         });
@@ -663,6 +709,11 @@ setlocale(LC_TIME, "spanish");
 @if(\Session::has('success'))
     <script>
         swal("Nuevo estudio generado","Se ha enviado un correo con código QR al correo del paciente.", "success");
+    </script>
+@endif
+@if(\Session::has('delete'))
+    <script>
+        swal("Estudio eliminado","Se ha eliminado el estudio seleccionado", "success");
     </script>
 @endif
 @endsection

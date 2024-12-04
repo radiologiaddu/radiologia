@@ -496,6 +496,24 @@
                                                                                 {!! nl2br($study->observations) !!}
                                                                             </div>
                                                                         </div>
+                                                                        <div class="row mt-3">
+    <strong>Observaciones del radiólogo:</strong>
+    <div class="col-12">
+        @if ($study->status === 'Enviado')
+            <!-- Mostrar texto cuando el estatus es "Enviado" -->
+            <p>{!! nl2br($study->obs_rad ?? 'Sin observaciones del radiólogo') !!}</p>
+        @else
+            <!-- Formulario para editar y guardar observaciones -->
+            <form action="{{ route('studies.update', $study->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <textarea name="obs_rad" id="obsRad{{$study->id}}" class="form-control" rows="3" placeholder="Agrega observaciones del radiólogo aquí">{{$study->obs_rad}}</textarea>
+                <button type="submit" class="btn btn-primary mt-2">Guardar Observaciones</button>
+            </form>
+        @endif
+    </div>
+</div>
+
                                                                         <hr>
                                                                         <div class="task-list-table">
                                                                             @if ($study->status != 'Realizado') 
@@ -553,7 +571,12 @@
             </div>
         </div>
     </div>
-    
+    @if(session('success') && false)
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+
 @endsection
 @section('css')
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

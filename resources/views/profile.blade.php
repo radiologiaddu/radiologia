@@ -7,10 +7,14 @@
 @endsection
 
 @section('content')
+
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
 <div class="col-sm-12">
     <div class="imprimir">
         @if($showCashBackOnly)
-            <button class="print-button" onclick="generateImageAndPrint()">Imprimir</button>
+            <!--<button class="print-button" onclick="generateImageAndPrint()">Imprimir</button>-->
+            <button class="print-button" onclick="fillDiplomaTemplate()">Imprimir FillPDF</button>
         @endif
     </div>
     <div class="card" id="cash-back">
@@ -237,6 +241,60 @@
             printWindow.close();
         };
     }
+    // Cargar y rellenar el PDF con PDF-Lib
+async function fillDiplomaTemplate() {
+    const { PDFDocument, rgb } = PDFLib;
+
+    // Cargar el PDF de plantilla
+    const existingPdfBytes = await fetch('/pdfs/Cashback-DDU.pdf').then(res => res.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+    // Acceder a la primera página
+    const page = pdfDoc.getPages()[0];
+
+    // Insertar los datos consultados en las posiciones deseadas
+    const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+    // Obtener la fuente en negrita
+    const fontBold = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+
+    // Nombre completo
+    page.drawText('{{ $user->name }} {{ $doctor->paternalSurname }} {{ $doctor->maternalSurname }}', {
+        x: 210,  // Ajusta la posición x según el diseño del diploma
+        y: 290,  // Ajusta la posición y según el diseño del diploma
+        size: 24,  // Aumenta el tamaño de la fuente
+        font: fontBold,  // Usa la fuente en negrita
+        color: rgb(0, 0, 0)  // Color del texto
+    });
+
+    const color = rgb(208 / 255, 169 / 255, 51 / 255);
+    // Cash Back o Reporte Anual
+    const message = "${{ $annualReturnFormatted }}";
+    page.drawText(message, {
+        x: 280,
+        y: 200,
+        size: 75,
+        font: fontBold,
+        color: color
+    });
+
+    // Vigencia
+    page.drawText('VÁLIDO HASTA 28 DE DICIEMBRE 2024', {
+        x: 45,  // Ajusta la posición x según el diseño del diploma
+        y: 40,  // Ajusta la posición y según el diseño del diploma
+        size: 8,  // Aumenta el tamaño de la fuente
+        font: fontBold,  // Usa la fuente en negrita
+        color: rgb(0, 0, 0)  // Color del texto
+    });
+
+    // Guardar el nuevo PDF modificado
+    const pdfBytes = await pdfDoc.save();
+
+    // Descargar o abrir el PDF modificado
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+}
+
 </script>
 @endsection
 

@@ -97,6 +97,24 @@ setlocale(LC_TIME, "spanish");
                         @endif
                     </p>
                 </h5>
+                <div class="card-block">
+    <h5 class="d-inline">Observaciones de Recepción:</h5>
+<div class="col-12">
+    @if ($study->status === 'Enviado')
+        <!-- Mostrar texto cuando el estatus es "Enviado" -->
+        <p>{!! nl2br($study->obs_recep ?? 'Sin observaciones de recepción') !!}</p>
+    @else
+        <!-- Formulario para editar y guardar observaciones -->
+        <form action="{{ route('studies.updateObsRecep', $study->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <textarea name="obs_recep" id="obsRecep{{$study->id}}" class="form-control" rows="3" placeholder="Agrega observaciones">{{$study->obs_recep}}</textarea>
+            <button type="submit" class="btn btn-primary mt-2">Guardar Observaciones</button>
+        </form>
+    @endif
+</div>
+
+</div>
             </div>
         </div>
     </div>

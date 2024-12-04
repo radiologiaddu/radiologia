@@ -149,6 +149,56 @@ class StudyController extends Controller
 
     }
 
+    public function delete($id)
+{
+    $study = Study::findOrFail($id); // Encuentra el estudio por ID
+    $study->status = 'Eliminado';   // Cambia el estatus
+    $study->save();                 // Guarda los cambios en la base de datos
+
+    return redirect()->route('recepcion')->with('delete', 'El estudio ha sido eliminado correctamente.');
+}
+
+public function update(Request $request, $id)
+{
+    $study = Study::findOrFail($id);
+
+    // Validar los datos recibidos
+    $request->validate([
+        'obs_rad' => 'nullable|string|max:1000', // Ajusta las reglas según sea necesario
+    ]);
+
+    // Actualizar las observaciones y la fecha
+    $study->obs_rad = $request->obs_rad;
+    $study->date_rad = now(); // Establece la fecha y hora actual
+    $study->save();
+
+    return redirect()->back()->with('success', 'Observaciones actualizadas correctamente.');
+}
+
+public function updateObsRecep(Request $request, $id)
+{
+    // Buscar el estudio por su ID
+    $study = Study::findOrFail($id);
+
+    // Validar los datos recibidos
+    $request->validate([
+        'obs_recep' => 'nullable|string|max:1000', // Validar obs_recep
+    ]);
+
+    // Actualizar las observaciones de recepción
+    if ($request->has('obs_recep')) {
+        $study->obs_recep = $request->obs_recep;
+        $study->date_recep = now(); // Actualiza la fecha de recepción
+    }
+
+    // Guardar los cambios
+    $study->save();
+
+    // Redirigir con un mensaje de éxito
+    return redirect()->back()->with('success', 'Observaciones de recepción actualizadas correctamente.');
+}
+
+
     public function getHour(Request $request)
     {
         $fecha1 = date_create($request->fecha);

@@ -189,6 +189,20 @@ $weekMap = [
                                 {!! nl2br($study->observations) !!}
                             </h4>
                         </h4>
+                        @if ($study->status === 'Enviado' OR $study->status === 'Realizado')
+                        <h4 class="mb-3">
+                            <strong>Observaciones Radiologo:</strong> 
+                            <h4 class="col-12">
+                                {!! nl2br($study->obs_rad ?? 'Sin observaciones de Radiología') !!}
+                            </h4>
+                        </h4>
+                        <h4 class="mb-3">
+                            <strong>Observaciones Recepción:</strong> 
+                            <h4 class="col-12">
+                                {!! nl2br($study->obs_recep ?? 'Sin observaciones de Recepción') !!}
+                            </h4>
+                        </h4>
+                        @endif
                         <h4 class="mb-3">
                             <strong>Tiempo de estudio:</strong> 
                             <h4 class="col-12">

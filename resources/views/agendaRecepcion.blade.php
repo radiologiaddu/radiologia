@@ -499,6 +499,12 @@
                                                                                 {!! nl2br($study->observations) !!}
                                                                             </div>
                                                                         </div>
+                                                                        <div class="row mt-3">
+    <strong>Observaciones del radiólogo:</strong>
+    <div class="col-12">
+            <p>{!! nl2br($study->obs_rad ?? 'Sin observaciones del radiólogo') !!}</p>
+    </div>
+</div>
                                                                         @if ($study->status != 'Realizado') 
                                                                                 @php
                                                                                 $colorClass = '';
