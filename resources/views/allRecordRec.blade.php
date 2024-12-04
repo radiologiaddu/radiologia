@@ -10,11 +10,36 @@
         margin-left: 50px;
     }
 </style>
-
 <link rel="stylesheet" href="{{ asset('/css/allStudy.css') }}">
     <!-- data tables css -->
 <link rel="stylesheet" href="{{ asset('/assets/plugins/data-tables/css/datatables.min.css') }}">
 
+@php
+setlocale(LC_TIME, "spanish");
+$weekMap = [
+        0 => 'Dom',
+        1 => 'Lun',
+        2 => 'Mar',
+        3 => 'Mie',
+        4 => 'Jue',
+        5 => 'Vie',
+        6 => 'Sáb',
+    ];
+    $months = [
+        '01' => 'Enero',
+        '02' => 'Febrero',
+        '03' => 'Marzo',
+        '04' => 'Abril',
+        '05' => 'Mayo',
+        '06' => 'Junio',
+        '07' => 'Julio',
+        '08' => 'Agosto',
+        '09' => 'Septiembre',
+        '10' => 'Octubre',
+        '11' => 'Noviembre',
+        '12' => 'Diciembre',
+    ];
+@endphp
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
@@ -37,61 +62,59 @@
                     </div>
                     <div class="col-12" id="div-table">
                         <table id="zero-configurationo" class="display table nowrap table-striped table-hover" style="width:100%">
-                            <thead>
+                        <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th class="tMovil">Folio</th>
                                     <th class="tMovil">SAE</th>
                                     <th>Paciente</th>
-                                    <th>Estudio</th>
-                                    <!--
-                                    <th class="tMovil">Recibido hace</th>
-                                    -->
+                                    <th class="tMovil">Fecha de Emisión</th> <!-- Antes Recibido hace-->
+                                    <th class="tMovil">Estatus</th>
+                                    <th class="tMovil">Fecha de estudio realizado</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($studies as $study)
                                 <tr>
-                                    <th>{{$study->id}}</th>
                                     <td class="tMovil">
                                         @if ($study->internal == 1)
                                             R{{sprintf('%06d',$study->folio)}}
                                         @else
                                             D{{sprintf('%06d',$study->folio)}}
-                                        @endif    
+                                        @endif
                                     </td>
                                     <td class="tMovil">{{$study->sae}}</td>
                                     <td>{{$study->patient_name}} {{$study->paternal_surname}} {{$study->maternal_surname}}</td>
-                                    <td>
-                                        @if($study->study_type->count() > 0)
-                                            {{$study->study_type[0]->type->type}}
-                                        @endif
-                                    </td>
-                                    <!--
                                     <td class="tMovil">
+                                        <span>{{$study->created_at}}</span>
+                                        <!-- <?php /*
+                                        class="d-none" //No se muestra en pantalla
                                         @if (($study->dias() + 0) == 0)
                                             @if (($study->horas() + 0) == 0)
                                                 {{ $study->minutos() + 0 }} Minutos
-
                                             @else
                                                 {{ $study->horas() + 0 }} Horas
                                             @endif
-
                                         @else
                                             {{ $study->dias() + 0 }} Días
-
-                                        @endif    
-                                    </td
-                                    -->
+                                        @endif  */ ?> -->
+                                    </td>
+                                    <td class="tMovil">{{$study->status}}</td>
+                                    <td class="tMovil">
+                                        @if ($study->date)
+                                            {{$study->date}}
+                                        @else
+                                            No Registrada
+                                        @endif
+                                    </td>
                                     <td>
                                         <a href="{{route('showStudyRecep',['id' => $study->id])}}" title="VER" class="label theme-bg text-white f-12 btn-rounded"><i class="feather icon-eye mr-0"></i></a>
                                         <a href="{{route('historialRec',['id' => $study->id])}}" title="HISTORIAL" class="label theme-record text-white f-12 btn-rounded" ><i class="feather icon-folder mr-0"></i></a>
                                         <!--
-                                        <a href="{{route('showStudyRecep',['id' => $study->id])}}">
+                                        <a href="{{route('showStudyCoo',['id' => $study->id])}}">
                                             <button type="button" class="btn-status btn btn-rounded btn-success">VER</button>
                                         </a>
-                                        <a href="{{route('historialRec',['id' => $study->id])}}">
+                                        <a href="{{route('historialCoo',['id' => $study->id])}}">
                                             <button id="changeStatus" type="button" class="btn btn-rounded btn-primary">VER HISTORIAL</button>
                                         </a>
                                         -->
@@ -115,9 +138,9 @@
     <script src="{{ asset('/assets/js/pages/tbl-datatable-custom.js') }} "></script>
     
     <script type="text/javascript">
-        $( "#reload" ).click(function() {
-            $( "#loading" ).removeClass( "d-none" )
-            $( "#div-table" ).addClass( "d-none" )
+    $( "#reload" ).click(function() {
+            $( "#loading" ).removeClass( "d-none" );
+            $( "#div-table" ).addClass( "d-none" );
             $( "#reload" ).addClass( "d-none" );
 
             $.ajax({
@@ -148,19 +171,17 @@
                     };
                     var table =  $('#zero-configurationo').DataTable(
                         {
-                            "order": [[0, 'desc']],
                             "responsive": false,
                             "ordering": true,
                             "columnDefs": [
                                 {
-                                    "targets": [ 0 ],
-                                    "bVisible": false,
+                                    "targets": [ 3 ],
                                     "searchable": false
-                                }/*,
+                                },
                                 {
                                     "targets": [ 4 ],
-                                    "searchable": true
-                                }*/
+                                    "searchable": false
+                                }
                             ],
                             language: {
                                 "decimal": "",
@@ -194,8 +215,8 @@
                         )
                         .draw();
                     } );
-                    $( "#loading" ).addClass( "d-none" )
-                    $( "#div-table" ).removeClass( "d-none" )
+                    $( "#loading" ).addClass( "d-none" );
+                    $( "#div-table" ).removeClass( "d-none" );
                     $( "#reload" ).removeClass( "d-none" );   
                 }
 
@@ -224,21 +245,23 @@
             };
             var table =  $('#zero-configurationo').DataTable(
                 {
-                    "order": [[0, 'desc']],
                     "responsive": false,
                     "ordering": true,
                     "columnDefs": [
                         {
-                            "targets": [ 0 ],
-                            "bVisible": false,
-                            "searchable": false
-                        }/*,
-                        {
-                            
                             "targets": [ 3 ],
                             "searchable": false
-                        }*/
+                        },
+                        {
+                            "targets": [ 4 ],
+                            "searchable": false
+                        },
+                        {
+                            "targets": [ 5 ],
+                            "searchable": true
+                        }
                     ],
+                    "order": [[3, "desc"]],
                     language: {
                         "decimal": "",
                         "emptyTable": "No se encontró información",
