@@ -23,11 +23,12 @@ class recordController extends Controller
 
     public function recordsRec($id)
     {
+        $study = Study::findOrFail($id);
         $records = Record::where('study_id', $study->id)
-        ->orderBy('created_at', 'DESC')
-        ->paginate(50); // Muestra 50 registros por página
-        return view('recordsRec', compact('records', 'id', 'study'));
-      
+            ->orderBy('created_at', 'DESC')
+            ->take(1500) // O puedes usar limit(1500)
+            ->get();
+    return view('recordsRec', compact('records', 'id', 'study'));  
     }
     
     public function recordsCoo($id)
