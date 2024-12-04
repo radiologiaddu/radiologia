@@ -266,9 +266,9 @@ class DoctorController extends Controller
             $study->formatted_date = Carbon::parse($study->date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
             $totalSum += $study->total;
         }
-        $totalSumFormatted = number_format($totalSum, 2, ',', '.');
+        $totalSumFormatted = number_format($totalSum, 2, '.', ',');
         $annualReturn = $totalSum * 0.02;
-        $annualReturnFormatted = number_format($annualReturn, 2, ',', '.');
+        $annualReturnFormatted = number_format($annualReturn, 2, '.', ',');
     
         // Indicador para mostrar solo el cash back
         $showCashBackOnly = request()->input('showCashBackOnly', false);

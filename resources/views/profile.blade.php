@@ -14,7 +14,7 @@
     <div class="imprimir">
         @if($showCashBackOnly)
             <!--<button class="print-button" onclick="generateImageAndPrint()">Imprimir</button>-->
-            <button class="print-button" onclick="fillDiplomaTemplate()">Imprimir FillPDF</button>
+            <button class="print-button" onclick="fillDiplomaTemplate()">Imprimir</button>
         @endif
     </div>
     <div class="card" id="cash-back">
