@@ -249,7 +249,9 @@ function openDeleteModal(studyId) {
 }
 
         $(window).on('load', function() {
+            if(false){
             $('#modal-sound').modal('show');
+            }
         });
 
         Pusher.logToConsole = true;

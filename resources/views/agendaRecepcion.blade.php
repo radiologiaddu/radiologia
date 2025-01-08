@@ -631,7 +631,9 @@
         // Full calendar
         $(window).on('load', function() {
             toggleFullScreen();
+            if(false){
             $('#modal-sound').modal('show');
+            }
             console.log("myArrayradiologists ",radiologists);
             $('#external-events .fc-event').each(function() {
                 thisDuration = $(this).attr('duration');

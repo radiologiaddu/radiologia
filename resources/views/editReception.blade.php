@@ -516,7 +516,18 @@
 
             $('input').each(function () {
                 if ($(this).is(':checked')) {
-                    total +=  parseFloat($( this ).attr('cost'));
+                    if($(this).attr('id') === "elementold4352question28answer141"){
+                        // Obtener el valor de la respuesta
+                        var respuesta = $('input[name="old4352question36"]').val();
+
+                        // Dividir el valor por comas y contar los elementos
+                        var valores = respuesta.split(',');
+                        var numeroElementos = valores.length;
+                        total += (parseFloat($( this ).attr('cost')) * numeroElementos);
+
+                    }else{
+                        total +=  parseFloat($( this ).attr('cost'));
+                    }
                     if($(this).attr('study_time') != ""){
                         duration = addTimes(duration, $(this).attr('study_time'))
                     }
@@ -580,7 +591,18 @@
                     duration = '00:00';
                     $('input').each(function () {
                         if ($(this).is(':checked')) {
-                            total +=  parseFloat($( this ).attr('cost'));
+                            if($(this).attr('id') === "elementold4352question28answer141"){
+                        // Obtener el valor de la respuesta
+                        var respuesta = $('input[name="old4352question36"]').val();
+
+                        // Dividir el valor por comas y contar los elementos
+                        var valores = respuesta.split(',');
+                        var numeroElementos = valores.length;
+                        total += (parseFloat($( this ).attr('cost')) * numeroElementos);
+
+                    }else{
+                        total +=  parseFloat($( this ).attr('cost'));
+                    }
                             if($(this).attr('study_time') != ""){
                                 duration = addTimes(duration, $(this).attr('study_time'))
                             }
@@ -626,7 +648,18 @@
 
                         $('input').each(function () {
                             if ($(this).is(':checked')) {
-                                total +=  parseFloat($( this ).attr('cost'));
+                                if($(this).attr('id') === "elementold4352question28answer141"){
+                        // Obtener el valor de la respuesta
+                        var respuesta = $('input[name="old4352question36"]').val();
+
+                        // Dividir el valor por comas y contar los elementos
+                        var valores = respuesta.split(',');
+                        var numeroElementos = valores.length;
+                        total += (parseFloat($( this ).attr('cost')) * numeroElementos);
+
+                    }else{
+                        total +=  parseFloat($( this ).attr('cost'));
+                    }
                                 if($(this).attr('study_time') != ""){
                                     duration = addTimes(duration, $(this).attr('study_time'))
                                 }
@@ -677,7 +710,18 @@
 
             $('input').each(function () {
                 if ($(this).is(':checked')) {
-                    total +=  parseFloat($( this ).attr('cost'));
+                    if($(this).attr('id') === "elementold4352question28answer141"){
+                        // Obtener el valor de la respuesta
+                        var respuesta = $('input[name="old4352question36"]').val();
+
+                        // Dividir el valor por comas y contar los elementos
+                        var valores = respuesta.split(',');
+                        var numeroElementos = valores.length;
+                        total += (parseFloat($( this ).attr('cost')) * numeroElementos);
+
+                    }else{
+                        total +=  parseFloat($( this ).attr('cost'));
+                    }
                     if($(this).attr('study_time') != ""){
                         duration = addTimes(duration, $(this).attr('study_time'))
                     }
@@ -800,7 +844,18 @@
 
                         $('input').each(function () {
                             if ($(this).is(':checked')) {
-                                total +=  parseFloat($( this ).attr('cost'));
+                                if($(this).attr('id') === "elementold4352question28answer141"){
+                        // Obtener el valor de la respuesta
+                        var respuesta = $('input[name="old4352question36"]').val();
+
+                        // Dividir el valor por comas y contar los elementos
+                        var valores = respuesta.split(',');
+                        var numeroElementos = valores.length;
+                        total += (parseFloat($( this ).attr('cost')) * numeroElementos);
+
+                    }else{
+                        total +=  parseFloat($( this ).attr('cost'));
+                    }
                                 if($(this).attr('study_time') != ""){
                                     duration = addTimes(duration, $(this).attr('study_time'))
                                 }
@@ -846,7 +901,18 @@
 
                             $('input').each(function () {
                                 if ($(this).is(':checked')) {
-                                    total +=  parseFloat($( this ).attr('cost'));
+                                    if($(this).attr('id') === "elementold4352question28answer141"){
+                        // Obtener el valor de la respuesta
+                        var respuesta = $('input[name="old4352question36"]').val();
+
+                        // Dividir el valor por comas y contar los elementos
+                        var valores = respuesta.split(',');
+                        var numeroElementos = valores.length;
+                        total += (parseFloat($( this ).attr('cost')) * numeroElementos);
+
+                    }else{
+                        total +=  parseFloat($( this ).attr('cost'));
+                    }
                                     if($(this).attr('study_time') != ""){
                                         duration = addTimes(duration, $(this).attr('study_time'))
                                     }
@@ -884,7 +950,18 @@
 
                 $('input').each(function () {
                     if ($(this).is(':checked')) {
+                        if($(this).attr('id') === "elementold4352question28answer141"){
+                        // Obtener el valor de la respuesta
+                        var respuesta = $('input[name="old4352question36"]').val();
+
+                        // Dividir el valor por comas y contar los elementos
+                        var valores = respuesta.split(',');
+                        var numeroElementos = valores.length;
+                        total += (parseFloat($( this ).attr('cost')) * numeroElementos);
+
+                    }else{
                         total +=  parseFloat($( this ).attr('cost'));
+                    }
                         if($(this).attr('study_time') != ""){
                             duration = addTimes(duration, $(this).attr('study_time'))
                         }
@@ -930,7 +1007,18 @@
             
             $('input').each(function () {
                 if ($(this).is(':checked')) {
-                    total +=  parseFloat($( this ).attr('cost'));
+                    if($(this).attr('id') === "elementold4352question28answer141"){
+                        // Obtener el valor de la respuesta
+                        var respuesta = $('input[name="old4352question36"]').val();
+
+                        // Dividir el valor por comas y contar los elementos
+                        var valores = respuesta.split(',');
+                        var numeroElementos = valores.length;
+                        total += (parseFloat($( this ).attr('cost')) * numeroElementos);
+
+                    }else{
+                        total +=  parseFloat($( this ).attr('cost'));
+                    }
                     if($(this).attr('study_time') != ""){
                         duration = addTimes(duration, $(this).attr('study_time'))
                     }
@@ -955,7 +1043,54 @@
             $( "#durationInput" ).val( duration )
         });
        
-       
+        $(document).ready(function () {
+    // Escuchar cambios en el input con name="old4352question36"
+    $('input[name="old4352question36"]').on('input', function () {
+        // Obtener el valor actual del input y dividirlo por comas
+        var respuesta = $(this).val().trim();
+        var valores = respuesta.split(',').filter(function (value) {
+            return value.trim() !== ''; // Filtrar elementos vacíos
+        });
+        var numeroElementos = valores.length;
+
+        // Verificar si el checkbox está marcado
+        var checkbox = $('input[id="elementold4352question28answer141"]');
+        if (checkbox.is(':checked')) {
+            // Obtener el costo del checkbox
+            var costo = parseFloat(checkbox.attr('cost'));
+
+            // Calcular el costo multiplicado por el número de elementos
+            var costoTotal = costo * numeroElementos;
+
+            // Obtener el valor actual del <h4 id="p-Cost">
+            var montoActualTexto = $('#p-Cost').text().replace(/[^0-9.-]+/g, ''); // Remover símbolos y obtener solo números
+            var montoActual = parseFloat(montoActualTexto) || 0;
+
+            // Calcular el nuevo monto
+            var nuevoMonto = montoActual + costoTotal - costo;
+
+            // Actualizar el valor de <h4 id="p-Cost">
+            var formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            var nuevoMontoFormateado = formatter.format(nuevoMonto);
+
+            console.log('Costo del checkbox:', costo);
+            console.log('Número de elementos:', numeroElementos);
+            console.log('Costo total:', costoTotal);
+            console.log('Monto actualizado:', nuevoMontoFormateado);
+        }
+    });
+    $('#p-Cost').text(nuevoMontoFormateado);
+
+            // Actualizar el valor del input hidden
+            $('#totalInput').val(nuevoMonto);
+});
+
+
     </script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 @endsection

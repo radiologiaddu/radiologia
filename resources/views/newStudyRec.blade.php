@@ -500,6 +500,16 @@
                 var duration = '00:00';
                 $.each($(".reviewTotal"), function (index, value) {
                     var cost = parseFloat($(value).attr('cost'))
+                    var id = $(value).attr('id');
+                    var text = $(value).text();
+
+                    // Verifica si el id o texto cumple con las condiciones
+        if (id === "reelementtypequestion28answer141" || text.includes("Periapical O.D. Nº: ($ 120.00)")) {
+            // Consulta el elemento con id "typequestion36"
+            var relatedElement = $("#typequestion36").text().trim();
+            var count = relatedElement.split(',').length; // Divide por ","
+            cost *= count; // Multiplica el costo por el número de elementos
+        }
                     total = total+cost;
                     if($(value).attr('study_time') != ""){
                         duration = addTimes(duration, $(value).attr('study_time'))

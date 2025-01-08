@@ -471,43 +471,57 @@
                 console.log("Formato incorrecto: "+$( this ).attr('id'));
                 valid = false;
             }
-            if(valid){
-                var total = 0;
-                var duration = '00:00';
-                $.each($(".reviewTotal"), function (index, value) {
-                    var cost = parseFloat($(value).attr('cost'))
-                    total = total+cost;
-                    if($(value).attr('study_time') != ""){
-                        duration = addTimes(duration, $(value).attr('study_time'))
-                    }
-                    if($(value).attr('preparation_time') != ""){
-                        duration = addTimes(duration, $(value).attr('preparation_time'))
-                    }
-                    if($(value).attr('exit_time') != ""){
-                        duration = addTimes(duration, $(value).attr('exit_time'))
-                    }
-                });
-                var locale = 'en-US';;
-                var options = {style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2};
-                var formatter = new Intl.NumberFormat(locale, options);
-                var labelCost = formatter.format(total);
-                $( "#p-Cost" ).html( `MXN ${labelCost}` );
-                $( "#Cost-temp" ).html( `MXN ${labelCost}` );
-                $( "#totalInput" ).val( total )
-                if(duration == '00:00'){
-                    $( "#p-Duration" ).html('')
-                    $( "#labelDuration" ).html('')
+            if (valid) {
+    var total = 0;
+    var duration = '00:00';
+    $.each($(".reviewTotal"), function (index, value) {
+        var cost = parseFloat($(value).attr('cost'));
+        var id = $(value).attr('id');
+        var text = $(value).text();
 
-                }else{
-                    $( "#labelDuration" ).html('Tiempo de estudio: ')
-                    $( "#p-Duration" ).html(duration )
-                }
-                $( "#durationInput" ).val( duration )
+        // Verifica si el id o texto cumple con las condiciones
+        if (id === "reelementtypequestion28answer141" || text.includes("Periapical O.D. Nº: ($ 120.00)")) {
+            // Consulta el elemento con id "typequestion36"
+            var relatedElement = $("#typequestion36").text().trim();
+            var count = relatedElement.split(',').length; // Divide por ","
+            cost *= count; // Multiplica el costo por el número de elementos
+        }
 
-                $( "#pills-studies" ).removeClass( "show active" );
-                $( "#pills-patient" ).removeClass( "show active" );
-                $( "#pills-review" ).addClass( "show active" );
-            }else{
+        total = total + cost;
+
+        if ($(value).attr('study_time') != "") {
+            duration = addTimes(duration, $(value).attr('study_time'));
+        }
+        if ($(value).attr('preparation_time') != "") {
+            duration = addTimes(duration, $(value).attr('preparation_time'));
+        }
+        if ($(value).attr('exit_time') != "") {
+            duration = addTimes(duration, $(value).attr('exit_time'));
+        }
+    });
+
+    var locale = 'en-US';
+    var options = {style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2};
+    var formatter = new Intl.NumberFormat(locale, options);
+    var labelCost = formatter.format(total);
+    $("#p-Cost").html(`MXN ${labelCost}`);
+    $("#Cost-temp").html(`MXN ${labelCost}`);
+    $("#totalInput").val(total);
+
+    if (duration == '00:00') {
+        $("#p-Duration").html('');
+        $("#labelDuration").html('');
+    } else {
+        $("#labelDuration").html('Tiempo de estudio: ');
+        $("#p-Duration").html(duration);
+    }
+    $("#durationInput").val(duration);
+
+    $("#pills-studies").removeClass("show active");
+    $("#pills-patient").removeClass("show active");
+    $("#pills-review").addClass("show active");
+}
+else{
                 Swal.fire(
                     'Formulario incorrecto',
                     'Los datos del paciente son incorrectos, revisa el formato',
