@@ -349,9 +349,9 @@
                               <td align="center" width="35"></td>
                               <td align="center" height="50" style="height:50px;">
                               <![endif]-->
-                                <singleline>
+                                <!--<singleline>
                                   <a href="{{ route('appointment' ,['id' =>$details['qr']]) }}" target="_blank" mc:edit  style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:16px;line-height:20px;font-weight:700;font-style:normal;color:#FFFFFF;text-decoration:none;letter-spacing:0px;padding: 15px 35px 15px 35px;display: inline-block;"><span>HAZ TU CITA</span></a>
-                                </singleline>
+                                </singleline>-->
                               <!--[if (gte mso 9)|(IE)]>
                               </td>
                               <td align="center" width="35"></td>

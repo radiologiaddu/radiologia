@@ -54,6 +54,35 @@
         <link rel="stylesheet" href="css/welcome.css">
 
         <link rel="stylesheet" href="{{ asset('/css/misEstudios.css') }}">
+        <style>
+            .study-header {
+                position: relative; /* Necesario para que el icono absoluto esté posicionado dentro de este contenedor */
+            }
+
+            .comentarios {
+    position: absolute;
+    right: 13px;
+    top: 15%;
+    z-index: 1;
+    font-size: 20px;
+    color: #6e7bde;
+    animation: pulse 2s infinite; /* Añade la animación "pulse" con duración de 2 segundos */
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1); /* Tamaño original */
+    }
+    50% {
+        transform: scale(1.2); /* Aumenta el tamaño al 120% */
+    }
+    100% {
+        transform: scale(1); /* Vuelve al tamaño original */
+    }
+}
+
+
+        </style>
     </head>
 
     <body>
@@ -165,7 +194,11 @@
                                                 </div>
                                                 @if($doctorReport === 'Activo')
                                                 <div>
-                                                    <h5>Cash Back: {{$annualReturnFormatted}}</h5>
+                                                    <h4>Cash Back: {{$annualReturnFormatted}}</h4>
+                                                
+                                                <a href="https://ddu.mx/shop">
+                                                    <button type="button" class="btn btn-rounded btn-new">Tienda en Línea</button>
+                                                </a>
                                                 </div>
                                                 @endif
                                             </div>
@@ -241,6 +274,7 @@
                                                         <div class="col-11 col-sm-6 col-md-6 col-xl-4">
                                                             <div class="card carrucel">
                                                                 <div class="card-header study-header">
+                                                                @if ($study->obs_recep != "" || $study->obs_rad !="")<i class="fa fa-comments comentarios" aria-hidden="true"></i>@endif
                                                                     <h4 class="mt-3 mb-3 bold color-indigo">{{$study->patient_name}} {{$study->paternal_surname}}</h4>
                                                                     <p>
                                                                         Recibido <strong> hace: 
