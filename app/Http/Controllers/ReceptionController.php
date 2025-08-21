@@ -277,7 +277,7 @@ class ReceptionController extends Controller
         }
     }
 
-    $study->status = 'Realizado'; //Enviado
+    $study->status = 'Enviado'; //Enviado
     $study->save();
 
     Record::create([
