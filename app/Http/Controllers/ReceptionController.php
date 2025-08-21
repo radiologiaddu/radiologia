@@ -23,6 +23,10 @@ use App\Models\Referral;
 use App\Mail\newStudy;
 use App\Events\hostEvent;
 use App\Events\cashEvent;
+use Twilio\Rest\Client;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ReceptionController extends Controller
 {
@@ -199,39 +203,111 @@ class ReceptionController extends Controller
     }
 
     public function sendEmailStudy(Request $request, $id = null)
-    {
-        set_time_limit(0);
+{
+    set_time_limit(0);
 
-        if(is_null($id)){
-            $study = Study::where('status', 'Realizado')->with('appointment','doctor')->findOrFail($request->selectStudy);
-        }else{
-            $study = Study::where('status', 'Realizado')->with('appointment','doctor')->findOrFail($id);
-        }
-        $file = $request->file('images');
-        if($file == null){
-            $file = [];
-        }
-        $link = $request->link;
-        Mail::to($study->patient_email)->send(new mailStudy($file,$study,$link));
-        if($study->doctor_id != 0 ){
-            Mail::to($study->doctor->user->email)->send(new mailStudy($file,$study,$link));
-        }else{
-            Mail::to($study->doctor_email)->send(new mailStudy($file,$study,$link));
-        }
-
-        $study->status = 'Enviado';
-        $study->save();
-        $newRecord = Record::create([
-            'study_id' => $study->id,
-            'action' => "Se enviaron los estudios al correo del paciente y del doctor.",
-            'user' => auth()->user()->name,
-            'user_email' => auth()->user()->email,
-            'folio' => $study->folio,
-        ]);
-        session(['flagModalR' => true]);
-        
-        return redirect()->route('recepcion') ;
+    if (is_null($id)) {
+        $study = Study::where('status', 'Realizado')->with('appointment', 'doctor')->findOrFail($request->selectStudy);
+    } else {
+        $study = Study::where('status', 'Realizado')->with('appointment', 'doctor')->findOrFail($id);
     }
+
+    $files = $request->file('images') ?? [];
+    $link = $request->link;
+
+    $publicUrls = [];
+    if(false){
+    foreach ($files as $f) {
+        $filename = $f->getClientOriginalName();
+    
+        // guarda en /public/pdfs/archivo.pdf
+        Storage::disk('public_pdfs')->putFileAs('', $f, $filename);
+    
+        // genera la URL pública
+        $publicUrls[] = $filename;
+    }}
+
+    // Enviar correo al paciente
+    Mail::to($study->patient_email)->send(new mailStudy($files, $study, $link));
+
+    // Enviar correo al doctor
+    if ($study->doctor_id != 0) {
+        Mail::to($study->doctor->user->email)->send(new mailStudy($files, $study, $link));
+    } else {
+        Mail::to($study->doctor_email)->send(new mailStudy($files, $study, $link));
+    }
+
+    // Enviar WhatsApp si hay número telefónico del paciente
+    if ($study->patient_phone && false) {
+        $rawPhone = $study->patient_phone;
+        $cleanPhone = preg_replace('/\D+/', '', $rawPhone);
+
+        if (Str::startsWith($cleanPhone, '52')) {
+            $cleanPhone = substr($cleanPhone, 2);
+        } elseif (Str::startsWith($cleanPhone, '1') && strlen($cleanPhone) === 11) {
+            $cleanPhone = substr($cleanPhone, 1);
+        }
+
+        $to = 'whatsapp:+521' . $cleanPhone;
+        $from = 'whatsapp:+5214441418342';
+
+        $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+
+        try {
+            Log::info("Intentando enviar WhatsApp a {$to}");
+
+            // Mensaje de texto principal
+            /*$twilio->messages->create($to, [
+                'from' => $from,
+                'body' => "Hola {$study->patient_name}, sus estudios ya están disponibles. Puede acceder a ellos en el siguiente enlace: {$link}",
+            ]);*/
+            $twilio->messages->create($to, [
+                'from' => $from,
+                'contentSid' => 'HXe243bc8660d11782b547b80a372f547b',
+                'contentVariables' => json_encode([
+                    '1' => trim($study->patient_name ?: 'Paciente'),
+                    '2' => trim($link ?: 'https://www.tusitio.com'),
+                ], JSON_UNESCAPED_UNICODE),
+            ]);
+            
+            
+
+            // Enviar cada archivo como mensaje individual
+            foreach ($publicUrls as $url) {
+                $twilio->messages->create($to, [
+                    'from' => $from,
+                    'contentSid' => 'HX1dc47bdfa724e78f79e43a6fd8613eec',
+                    'contentVariables' => json_encode([
+                        '2' => 'Cashback-DDU.pdf',
+                    ]),
+                    
+                ]);
+                Log::info("Enviado archivo por WhatsApp: {$url}");
+        }
+
+            Log::info("WhatsApp enviado correctamente a {$to}");
+        } catch (\Exception $e) {
+            Log::error('Error al enviar WhatsApp: ' . $e->getMessage());
+        }
+    }
+
+    // Actualizar estado
+    $study->status = 'Enviado'; //Enviado
+    $study->save();
+
+    // Guardar historial
+    Record::create([
+        'study_id' => $study->id,
+        'action' => "Se enviaron los estudios al correo del paciente y del doctor, y por WhatsApp si había número.",
+        'user' => auth()->user()->name,
+        'user_email' => auth()->user()->email,
+        'folio' => $study->folio,
+    ]);
+
+    session(['flagModalR' => true]);
+    return redirect()->route('recepcion');
+}
+
     
     public function finish ($id)
     {

@@ -19,8 +19,7 @@
         "simonbackx/slack-php-webhook": "^1.0",
         "simplesoftwareio/simple-qrcode": "~2",
         "spatie/laravel-permission": "^5.5",
-        "twilio/sdk": "^6.41"
-
+        "twilio/sdk": "^8.6"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

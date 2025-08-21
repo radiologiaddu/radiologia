@@ -8,6 +8,7 @@ use App\Events\StatusLiked;
 use App\Events\myEvent;
 use Twilio\Rest\Client;
 use Twilio\Exceptions;
+use App\Http\Controllers\ReceptionControllerWA;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,14 +29,15 @@ Route::get('/testTwilio', function () {
     $message = $twilio->messages
       ->create("whatsapp:+521"."4448588272", // to
         array(
-          "from" => "whatsapp:+14155238886",
+          //"from" => "whatsapp:+14155238886",
+          "from" => "whatsapp:+15557553876",
           "body" => $body
         )
       );
     $message = $twilio->messages
     ->create("whatsapp:+521"."5552172412", // to
     array(
-        "from" => "whatsapp:+14155238886",
+        "from" => "whatsapp:+15557553876",
         "body" => $body
     )
     );
@@ -202,6 +204,9 @@ Route::group(['middleware'=>['verified','auth']],function(){
         Route::post('/newDateRecepcion', [App\Http\Controllers\coorController::class, 'newDate'])->name('newDateRecepcion');
         Route::patch('/studies/{id}/delete', [App\Http\Controllers\StudyController::class, 'delete'])->name('studies.delete');
         Route::put('studies/{study}/update-obs-recep', [App\Http\Controllers\StudyController::class, 'updateObsRecep'])->name('studies.updateObsRecep');
+
+        Route::get('/enviarEstudiosTest/{id?}', [App\Http\Controllers\ReceptionControllerWA::class, 'sendStudyTest'])->name('sendStudyTest');
+        Route::post('/sendEmailStudyWA/{id?}', [App\Http\Controllers\ReceptionControllerWA::class, 'sendEmailStudy'])->name('sendEmailStudyWA');
     });
     
     Route::group(['middleware'=>['role:Hostess']],function(){
@@ -286,3 +291,45 @@ Route::get('test', function () {
 });
 // Ruta en web.php
 Route::post('/actualizar-estatus/{userId}', [App\Http\Controllers\DoctorController::class, 'actualizarEstatusReport']);
+Route::get('/test-whatsapp', function () {
+    $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+
+    $from = 'whatsapp:+5214441418342';
+    $to = 'whatsapp:+5214441322227'; // Número de prueba real (tu propio número u otro contacto real con WhatsApp)
+
+    //$from = 'whatsapp:+14155238886'; // Este es el número de Twilio Sandbox
+    $body = ' Prueba directa desde Laravel usando Twilio WhatsApp API.';
+
+    try {
+        $twilio->messages->create($to, [
+            'from' => $from,
+            'contentSid' => 'HXe243bc8660d11782b547b80a372f547b',
+            'contentVariables' => json_encode([
+                '1' => trim('Paciente'),
+                '2' => trim('https://www.tusitio.com'),
+            ], JSON_UNESCAPED_UNICODE),
+        ]);
+        return ' Mensaje enviado correctamente por WhatsApp.';
+    } catch (\Exception $e) {
+        return ' Error: ' . $e->getMessage();
+    }
+});
+Route::get('/whatsapp-test', function () {
+    $to = 'whatsapp:+5214441322227'; // Tu número con +521
+    $from = 'whatsapp:+5214441418342'; // Tu número verificado en Twilio
+    $pdfUrl = 'https://app.ddu.mx/pdfs/Cashback-DDU.pdf';
+
+    $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+
+    try {
+        $twilio->messages->create($to, [
+            'from' => $from,
+            'body' => 'Aquí tienes tu PDF de prueba:',
+            'mediaUrl' => [$pdfUrl],
+        ]);
+
+        return '✅ WhatsApp enviado correctamente a ' . $to;
+    } catch (\Exception $e) {
+        return '❌ Error: ' . $e->getMessage();
+    }
+});
