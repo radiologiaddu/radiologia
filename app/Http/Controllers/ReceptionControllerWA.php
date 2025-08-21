@@ -291,6 +291,7 @@ $publicUrls[] = $filename;
                     ]),
                 ]);
                 Log::info("Enviado archivo por WhatsApp: {$url}");
+                Storage::disk('public_pdfs')->delete($url);
             }}
 
             Log::info("WhatsApp enviado correctamente a {$to}");
