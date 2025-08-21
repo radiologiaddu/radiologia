@@ -219,13 +219,23 @@ class ReceptionControllerWA extends Controller
     $publicUrls = [];
 
 foreach ($file as $f) {
-    $filename = $f->getClientOriginalName();
+    // Obtener el nombre original
+$originalName = $f->getClientOriginalName();
 
-    // guarda en /public/pdfs/archivo.pdf
-    Storage::disk('public_pdfs')->putFileAs('', $f, $filename);
+// Convertir a minúsculas
+$filename = strtolower($originalName);
 
-    // genera la URL pública
-    $publicUrls[] = $filename;
+// Reemplazar espacios por guiones
+$filename = preg_replace('/\s+/', '-', $filename);
+
+// Eliminar caracteres que no sean letras, números, guiones, puntos
+$filename = preg_replace('/[^a-z0-9\.-]/', '', $filename);
+
+// Guardar el archivo
+Storage::disk('public_pdfs')->putFileAs('', $f, $filename);
+
+// Guardar el nombre limpio
+$publicUrls[] = $filename;
 }
 
 
