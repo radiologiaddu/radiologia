@@ -1091,7 +1091,7 @@ class ReceptionController extends Controller
             'patient_email' => strtolower($request->patient_email),
             'patient_phone' => $request->patient_phone,
             'observations' => $request->note,
-            'status' => "Llegada",
+            'status' => "Creado",
             'qr' => $token,
             'total' => $request->total,
             //'birthday' => $request->year."-".$request->month."-".$request->day,
