@@ -13,6 +13,7 @@ use App\Models\Study_type;
 use App\Models\Type_question;
 use App\Models\Question_answer;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Mail\newStudy;
 use App\Events\hostEvent;
 
@@ -328,7 +329,11 @@ class HostessController extends Controller
             'total' => sprintf('$ %s', number_format($newStudy->total, 2))
         ];
 
-        Mail::to($request->patient_email)->send(new newStudy($details));
+        try {
+            Mail::to($request->patient_email)->send(new newStudy($details));
+        } catch (\Exception $e) {
+            Log::error('Error al enviar email de nuevo estudio: ' . $e->getMessage());
+        }
         event(new hostEvent());
 
         return redirect()->route('newStudyHostess')->with('success', 'study');

@@ -227,12 +227,16 @@ class ReceptionController extends Controller
         $publicUrls[] = $filename;
     }
 
-    Mail::to($study->patient_email)->send(new mailStudy($file, $study, $link));
+    try {
+        Mail::to($study->patient_email)->send(new mailStudy($file, $study, $link));
 
-    if ($study->doctor_id != 0) {
-        Mail::to($study->doctor->user->email)->send(new mailStudy($file, $study, $link));
-    } else {
-        Mail::to($study->doctor_email)->send(new mailStudy($file, $study, $link));
+        if ($study->doctor_id != 0) {
+            Mail::to($study->doctor->user->email)->send(new mailStudy($file, $study, $link));
+        } else {
+            Mail::to($study->doctor_email)->send(new mailStudy($file, $study, $link));
+        }
+    } catch (\Exception $e) {
+        Log::error('Error al enviar email de estudio: ' . $e->getMessage());
     }
 
     if ($study->patient_phone) {
@@ -301,9 +305,13 @@ class ReceptionController extends Controller
         $study->save();
         $file = [];
         $link = null;
-        Mail::to($study->patient_email)->send(new mailStudy($file,$study,$link));
-        if($study->doctor_id != 0){
-            Mail::to($study->doctor->user->email)->send(new mailStudy($file,$study,$link));
+        try {
+            Mail::to($study->patient_email)->send(new mailStudy($file,$study,$link));
+            if($study->doctor_id != 0){
+                Mail::to($study->doctor->user->email)->send(new mailStudy($file,$study,$link));
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al enviar email de estudio finalizado: ' . $e->getMessage());
         }
         $newRecord = Record::create([
             'study_id' => $study->id,
@@ -1215,7 +1223,11 @@ class ReceptionController extends Controller
             'total' => sprintf('$ %s', number_format($newStudy->total, 2))
         ];
 
-        Mail::to($request->patient_email)->send(new newStudy($details));
+        try {
+            Mail::to($request->patient_email)->send(new newStudy($details));
+        } catch (\Exception $e) {
+            Log::error('Error al enviar email de nuevo estudio: ' . $e->getMessage());
+        }
         //event(new hostEvent());
 
         return redirect()->route('recepcion')->with('success', 'study');

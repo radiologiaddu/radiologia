@@ -20,7 +20,10 @@ class RolesMiddleware
      */
     public function handle($request, Closure $next,$role)
     {   
-        URL::forceScheme('https');
+        // Solo forzar HTTPS en producción
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
 
         if(!$request->user()->hasAnyRole($role)){
             $roles = $request->user()->getRoleNames();
