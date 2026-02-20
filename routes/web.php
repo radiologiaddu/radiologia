@@ -292,7 +292,7 @@ Route::get('test', function () {
 // Ruta en web.php
 Route::post('/actualizar-estatus/{userId}', [App\Http\Controllers\DoctorController::class, 'actualizarEstatusReport']);
 Route::get('/test-whatsapp', function () {
-    $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+    $twilio = new Client(config('services.twilio.sid'), config('services.twilio.token'));
 
     $from = 'whatsapp:+5214441418342';
     $to = 'whatsapp:+5214441322227'; // Número de prueba real (tu propio número u otro contacto real con WhatsApp)
@@ -319,7 +319,7 @@ Route::get('/whatsapp-test', function () {
     $from = 'whatsapp:+5214441418342'; // Tu número verificado en Twilio
     $pdfUrl = 'https://app.ddu.mx/pdfs/Cashback-DDU.pdf';
 
-    $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+    $twilio = new Client(config('services.twilio.sid'), config('services.twilio.token'));
 
     try {
         $twilio->messages->create($to, [

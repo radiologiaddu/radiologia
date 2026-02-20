@@ -263,9 +263,8 @@ $publicUrls[] = $filename;
         $to = 'whatsapp:+521' . $cleanPhone;
         $from = 'whatsapp:+5214441418342';
 
-        $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
-
         try {
+            $twilio = new Client(config('services.twilio.sid'), config('services.twilio.token'));
             Log::info("Intentando enviar WhatsApp a {$to}");
 
             // Mensaje de texto principal (solo si hay link)

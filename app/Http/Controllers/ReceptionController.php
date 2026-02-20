@@ -255,7 +255,7 @@ class ReceptionController extends Controller
         $from = 'whatsapp:+5214441418342';
 
         try {
-            $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+            $twilio = new Client(config('services.twilio.sid'), config('services.twilio.token'));
 
             if ($link) {
                 $twilio->messages->create($to, [
