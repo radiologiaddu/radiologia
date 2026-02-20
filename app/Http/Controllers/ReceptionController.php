@@ -228,11 +228,13 @@ class ReceptionController extends Controller
     }
 
     try {
-        Mail::to($study->patient_email)->send(new mailStudy($file, $study, $link));
+        if (!empty($study->patient_email)) {
+            Mail::to($study->patient_email)->send(new mailStudy($file, $study, $link));
+        }
 
-        if ($study->doctor_id != 0) {
+        if ($study->doctor_id != 0 && $study->doctor && $study->doctor->user && !empty($study->doctor->user->email)) {
             Mail::to($study->doctor->user->email)->send(new mailStudy($file, $study, $link));
-        } else {
+        } elseif (!empty($study->doctor_email)) {
             Mail::to($study->doctor_email)->send(new mailStudy($file, $study, $link));
         }
     } catch (\Exception $e) {
@@ -306,8 +308,10 @@ class ReceptionController extends Controller
         $file = [];
         $link = null;
         try {
-            Mail::to($study->patient_email)->send(new mailStudy($file,$study,$link));
-            if($study->doctor_id != 0){
+            if (!empty($study->patient_email)) {
+                Mail::to($study->patient_email)->send(new mailStudy($file,$study,$link));
+            }
+            if($study->doctor_id != 0 && $study->doctor && $study->doctor->user && !empty($study->doctor->user->email)){
                 Mail::to($study->doctor->user->email)->send(new mailStudy($file,$study,$link));
             }
         } catch (\Exception $e) {
@@ -1224,7 +1228,9 @@ class ReceptionController extends Controller
         ];
 
         try {
-            Mail::to($request->patient_email)->send(new newStudy($details));
+            if (!empty($request->patient_email)) {
+                Mail::to($request->patient_email)->send(new newStudy($details));
+            }
         } catch (\Exception $e) {
             Log::error('Error al enviar email de nuevo estudio: ' . $e->getMessage());
         }

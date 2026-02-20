@@ -330,7 +330,9 @@ class HostessController extends Controller
         ];
 
         try {
-            Mail::to($request->patient_email)->send(new newStudy($details));
+            if (!empty($request->patient_email)) {
+                Mail::to($request->patient_email)->send(new newStudy($details));
+            }
         } catch (\Exception $e) {
             Log::error('Error al enviar email de nuevo estudio: ' . $e->getMessage());
         }
